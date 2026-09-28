@@ -6,6 +6,7 @@
 
 **Status:** ready-for-human
 
+- [ ] Runner de migrations com db0: arquivos SQL numerados aplicados em ordem no boot, registrados em `_migrations`, idempotente (ADR 0001)
 - [ ] Tabela de usuários criada via migration (id, email único, hash de senha, display_name, timezone, settings, created_at)
 - [ ] Senha guardada só como hash
 - [ ] Email duplicado mostra erro amigável; senha curta é rejeitada no servidor

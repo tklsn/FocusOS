@@ -8,5 +8,5 @@
 
 - [ ] Qualquer página exceto o login redireciona para `/login` sem sessão
 - [ ] Logado, abrir `/login` leva para a Home
-- [ ] Toda rota de API (exceto auth) exige sessão e responde 401 sem ela
+- [ ] Toda rota de API (exceto auth e `/mcp`) exige sessão e responde 401 sem ela; `/mcp` usa token próprio (ticket 43)
 - [ ] Regra documentada: o user_id vem sempre da sessão, nunca do cliente

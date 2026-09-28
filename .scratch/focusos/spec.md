@@ -6,13 +6,28 @@ Gerenciador de tarefas sob medida para um profissional com TDAH (engenheiro de s
 
 ## Stack
 
-- Nuxt 4 (full-stack) + shadcn-vue (port Vue do shadcn/ui, via módulo `shadcn-nuxt`) + Tailwind v4; ícones lucide
+- Nuxt 4 SPA (`ssr: false`) + shadcn-vue (port Vue do shadcn/ui, via módulo `shadcn-nuxt`) + Tailwind v4; ícones lucide
 - Backend: rotas de servidor Nitro (`server/api/`)
-- DB: SQLite via Drizzle ORM (arquivo em `.data/`, gitignored); migrar para Postgres se um dia precisar
-- Auth: sessão por cookie via `nuxt-auth-utils` (email + senha, `hashPassword`/`verifyPassword`)
-- IA (decomposição): chamada a LLM só no servidor; API key em `.env`, nunca no cliente
+- DB: db0 via `useDatabase()` do Nitro, SQL à mão, migrations SQL numeradas aplicadas no boot; conector por ambiente (SQLite em `.data/` no dev). Ver ADR 0001
+- Desktop: Electron com o servidor Nitro embutido e SQLite em `userData`. Ver ADR 0002
+- Web e desktop são instâncias independentes, sem sync. Ver ADR 0003
+- Auth: sessão por cookie via `nuxt-auth-utils` (email + senha, `hashPassword`/`verifyPassword`). No desktop, opção de entrar sem login com usuário local automático
+- MCP: endpoint `/mcp` (streamable HTTP) no mesmo servidor, token Bearer por usuário. Ver ADR 0004
+- IA (decomposição): chamada a LLM só no servidor; API key em `.env` (web) ou nas Configurações locais (desktop), nunca no renderer
 
-Sem RLS: **toda rota de servidor obtém o usuário da sessão (`requireUserSession`) e filtra/grava por `user_id`**. Nunca aceitar `user_id` vindo do cliente.
+Sem RLS: **toda rota de servidor e toda tool MCP obtém o usuário da sessão (`requireUserSession`) ou do token MCP, e filtra/grava por `user_id`**. Nunca aceitar `user_id` vindo do cliente nem de argumento de tool.
+
+## MCP para agentes
+
+Agentes (Claude Code etc.) usam o FocusOS via MCP. As tools chamam as mesmas funções de servidor das rotas da UI (mesmas regras de negócio, nada duplicado), têm nomes em português, descrições claras e entrada validada com zod.
+
+- `capturar_tarefa`: cria tarefa na Inbox
+- `listar_inbox`
+- `listar_areas_e_projetos`
+- `ler_onde_parei` / `atualizar_onde_parei`: nota de retomada de um projeto
+- `concluir_tarefa`
+- `listar_hoje` / `agendar_para_hoje`: já com rollover aplicado
+- `proximas_acoes`
 
 ## Princípios de UX (obrigatórios em todas as telas)
 
@@ -28,7 +43,7 @@ Sem RLS: **toda rota de servidor obtém o usuário da sessão (`requireUserSessi
 
 ## Modelo de dados
 
-Enums como texto; datas como texto ISO; JSON como texto em modo json.
+Enums como texto; datas como texto ISO; JSON serializado como texto no servidor.
 
 - **users**: id, email (unique), password_hash, display_name, timezone, settings (json: gamification, sound, shutdown_time, theme), created_at
 - **areas**: id, user_id, name, color, icon, sort_order
@@ -46,7 +61,7 @@ Enums como texto; datas como texto ISO; JSON como texto em modo json.
 4. **Inbox** — itens sem triagem; ação rápida para atribuir área/projeto/energia/contexto ou decompor.
 5. **Projeto** — nota "onde eu parei" editável e destacada, próxima ação marcada, tarefas/subtarefas.
 6. **Nova Tarefa / Decompor** — formulário mínimo + "Decompor em micro-passos" (IA) com slider de granularidade; salvar passos como subtarefas.
-7. **Configurações** — gamificação e sons on/off, horário de shutdown, tema.
+7. **Configurações** — gamificação e sons on/off, horário de shutdown, tema; seção Agentes (MCP) com URL e tokens.
 
 ## Regras de negócio
 
@@ -62,6 +77,6 @@ O trabalho está quebrado em tickets de fatia vertical em `issues/`, numerados e
 
 ## Fora de escopo (Fase 2)
 
-Planejamento/shutdown guiados, calendário/timeboxing por arrastar, integração GitHub/calendário, recorrências, body doubling, relatórios estimado-vs-real, Kanban de sprint, templates de rotina, PWA/mobile.
+Planejamento/shutdown guiados, calendário/timeboxing por arrastar, integração GitHub/calendário, recorrências, body doubling, relatórios estimado-vs-real, Kanban de sprint, templates de rotina, PWA/mobile, sync entre desktop e web, MCP via stdio, atalho de captura global do sistema operacional, auto-update e assinatura do instalador desktop.
 
 Critério para avançar de fase: usar o MVP por ~2 semanas capturando e concluindo tarefas de forma consistente.

@@ -6,7 +6,7 @@
 
 **Status:** ready-for-human
 
-- [ ] Chamada ao LLM feita só no servidor; API key em variável de ambiente, nunca no cliente
+- [ ] Chamada ao LLM feita só no servidor; API key em variável de ambiente (web) ou nas Configurações locais (desktop), nunca exposta ao renderer
 - [ ] Prévia editável dos passos antes de salvar
 - [ ] Salvar cria subtarefas com estimativa
 - [ ] Falha ou timeout mostra mensagem gentil e não perde nada
