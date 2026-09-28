@@ -12,3 +12,9 @@
 - [ ] Dados sobrevivem a fechar e reabrir o app
 - [ ] Conector do banco sem rebuild nativo quebrado no Electron (ADR 0001)
 - [ ] Funciona sem internet
+
+## Comments
+
+### Follow-up from review of 01 (2026-09-28)
+
+- [ ] Fonte JetBrains Mono carregada do Google Fonts por URL (`app/assets/css/tailwind.css:1`) não funciona offline; servir localmente (ex.: `@fontsource/jetbrains-mono` ou `@nuxt/fonts`)

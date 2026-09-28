@@ -58,4 +58,14 @@ Append the verdict to the ticket under `## Comments`:
 - [ ] item to fix (file:line when useful)
 ```
 
+**Propagate follow-ups.** When a review item belongs to a later ticket (it must be fixed "by ticket NN" or "together with NN"), also append it to that ticket's `## Comments`, under a heading naming its origin, so whoever picks that ticket up sees it:
+
+```markdown
+### Follow-up from review of 01 (YYYY-MM-DD)
+
+- [ ] item, with file:line when useful
+```
+
+Keep the item in the reviewed ticket too, pointing to the destination ticket. Create the `## Comments` section if the ticket has none.
+
 On **approved**, check the met criteria, set `done`, and note it in the current sprint file. On **changes requested**, set the status back to `in-progress`.

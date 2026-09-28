@@ -9,3 +9,9 @@
 - [ ] Tarefa com scheduled_for anterior a hoje e não concluída aparece na Home como tarefa de hoje
 - [ ] Nenhuma cor de alerta, contador ou texto de "atrasada"
 - [ ] Teste cobre a virada de dia no timezone do usuário
+
+## Comments
+
+### Follow-up from review of 01 (2026-09-28)
+
+- [ ] Rollover depende da virada do dia com o app aberto: garantir que a Home recalcula "hoje" após a meia-noite (ver follow-up no ticket 16)

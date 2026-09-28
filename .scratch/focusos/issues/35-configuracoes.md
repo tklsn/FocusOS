@@ -10,3 +10,9 @@
 - [ ] Tema claro, escuro ou do sistema
 - [ ] Timezone editável (padrão: o do navegador)
 - [ ] Aviso "ferramenta de apoio, não tratamento" visível
+
+## Comments
+
+### Follow-up from review of 01 (2026-09-28)
+
+- [ ] Tokens do modo escuro já existem em `app/assets/css/tailwind.css`, mas nada liga a classe `.dark`. Usar `@nuxtjs/color-mode` ou `useColorMode` (VueUse) e conferir contraste AA no escuro
