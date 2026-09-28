@@ -37,3 +37,7 @@ Default five canonical labels (`needs-triage`, `needs-info`, `ready-for-agent`, 
 ### Domain docs
 
 Single-context: one `CONTEXT.md` and `docs/adr/` at the repo root, created lazily. See `docs/agents/domain.md`.
+
+### Workflow
+
+The human writes all application code; the agent acts as Product Owner, Scrum Master and code reviewer (sprints, ticket statuses, reviews appended to tickets). See `docs/agents/workflow.md`.
