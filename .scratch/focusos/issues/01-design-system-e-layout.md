@@ -4,10 +4,10 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-human
+**Status:** in-progress
 
-- [ ] Tailwind v4 e shadcn-vue configurados; componentes base (botão, input, card, diálogo, toast) adicionados via CLI do shadcn-vue
-- [ ] Tema suave com contraste AA em modo claro e escuro
+- [x] Tailwind v4 e shadcn-vue configurados; componentes base (botão, input, card, diálogo, toast) adicionados via CLI do shadcn-vue
+- [x] Tema suave com contraste AA em modo claro e escuro
 - [ ] Layout com navegação lateral que funciona por teclado e colapsa em telas estreitas
 - [ ] Home mostra estado vazio acolhedor no lugar do NuxtWelcome
 - [ ] `pnpm build` passa
