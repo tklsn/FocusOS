@@ -2,7 +2,7 @@
 
 **What to build:** Em Configurações > Agentes, o usuário gera um token e vê a URL do MCP; um agente configurado com eles conecta ao `/mcp` e lista as tools (ainda vazias ou com uma tool de ping).
 
-**Blocked by:** 04
+**Blocked by:** 02
 
 **Status:** ready-for-human
 

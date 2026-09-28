@@ -2,7 +2,7 @@
 
 **What to build:** O usuário organiza a vida em áreas (ex.: Trabalho, Pesquisa, Mestrado, Pessoal), com nome, cor e ícone.
 
-**Blocked by:** 04
+**Blocked by:** 02
 
 **Status:** ready-for-human
 

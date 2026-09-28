@@ -2,7 +2,7 @@
 
 **What to build:** Na Home há um campo de captura sempre visível: digitar e apertar Enter cria uma tarefa na Inbox, sem pedir projeto nem data.
 
-**Blocked by:** 04
+**Blocked by:** 02
 
 **Status:** ready-for-human
 

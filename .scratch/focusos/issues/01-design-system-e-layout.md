@@ -22,7 +22,7 @@ Todos os critérios atendidos; `pnpm build` e `pnpm lint` passam. Itens abaixo n
 
 - [x] Logo da barra usa `<a href="#">` (`app/components/app/Sidebar.vue:21`): trocar por `<NuxtLink to="/">` para levar à Home
 - [x] `app/pages/index.vue:1` usa `lang="js"`; o projeto é TypeScript, usar `lang="ts"`. Limpar `class=""` e o espaço duplo em `text-4xl  font-bold`
-- [ ] `app/components/nav/User.vue` é código morto com dados de exemplo (Upgrade to Pro, Billing); remover ou reaproveitar no ticket 03 (copiado para o 03)
+- [ ] `app/components/nav/User.vue` é código morto com dados de exemplo (Upgrade to Pro, Billing); remover ou reaproveitar no ticket 52 (copiado para o 52)
 - [ ] Fonte JetBrains Mono vem do Google Fonts via `@import` remoto (`tailwind.css:1`): no desktop offline (ticket 41) não carrega. Servir localmente (ex.: `@fontsource/jetbrains-mono` ou `@nuxt/fonts`) até o ticket 41 (copiado para o 41)
 - [ ] Tokens do modo escuro existem, mas nada liga a classe `.dark`; o seletor de tema entra no ticket 35 (lembrar de `@nuxtjs/color-mode` ou `useColorMode`; copiado para o 35)
 - [ ] A data da Home é calculada uma vez no carregamento; com o app aberto o dia todo (desktop), fica errada após a meia-noite. Resolver junto do ticket 16/17 (data reativa, ex.: `useNow`; copiado para 16 e 17)

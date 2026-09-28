@@ -23,5 +23,5 @@ Em desenvolvimento, a janela carrega o `nuxt dev`. O renderer não recebe acesso
 ## Consequências
 
 - Instalador grande (~100 MB) por embutir Chromium e Node.
-- O servidor escuta só em `127.0.0.1`; nada fica exposto na rede.
+- O servidor escuta só em `127.0.0.1`; nada fica exposto na rede. Mas sites abertos no navegador e outros processos locais alcançam `127.0.0.1`: sem login no desktop (ADR 0003), a API checa `Host`/`Origin` e exige um segredo gerado a cada abertura e entregue só à janela do app.
 - Auto-update e assinatura/notarização do instalador ficam fora do MVP.

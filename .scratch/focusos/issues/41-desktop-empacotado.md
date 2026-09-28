@@ -18,3 +18,8 @@
 ### Follow-up from review of 01 (2026-09-28)
 
 - [ ] Fonte JetBrains Mono carregada do Google Fonts por URL (`app/assets/css/tailwind.css:1`) não funciona offline; servir localmente (ex.: `@fontsource/jetbrains-mono` ou `@nuxt/fonts`)
+
+### Nota do PO (2026-09-28)
+
+- [ ] Segredo gerado a cada abertura do app, entregue só à janela do Electron e exigido pela API (além da checagem de Host/Origin do ticket 02), para que outros processos locais não usem a API sem o app
+- [ ] Usuário local do ticket 02 criado no banco em `userData` no primeiro uso

@@ -10,12 +10,12 @@ Gerenciador de tarefas sob medida para um profissional com TDAH (engenheiro de s
 - Backend: rotas de servidor Nitro (`server/api/`)
 - DB: db0 via `useDatabase()` do Nitro, SQL à mão, migrations SQL numeradas aplicadas no boot; conector por ambiente (SQLite em `.data/` no dev). Ver ADR 0001
 - Desktop: Electron com o servidor Nitro embutido e SQLite em `userData`. Ver ADR 0002
-- Web e desktop são instâncias independentes, sem sync. Ver ADR 0003
-- Auth: sessão por cookie via `nuxt-auth-utils` (email + senha, `hashPassword`/`verifyPassword`). No desktop, opção de entrar sem login com usuário local automático
+- **v1 é desktop offline-first**, sem login: um usuário local criado automaticamente. A versão web (multiusuário, instância independente, sem sync) vem depois. Ver ADR 0003
+- Auth (só versão web): sessão por cookie via `nuxt-auth-utils` (email + senha, `hashPassword`/`verifyPassword`)
 - MCP: endpoint `/mcp` (streamable HTTP) no mesmo servidor, token Bearer por usuário. Ver ADR 0004
 - IA (decomposição): chamada a LLM só no servidor; API key em `.env` (web) ou nas Configurações locais (desktop), nunca no renderer
 
-Sem RLS: **toda rota de servidor e toda tool MCP obtém o usuário da sessão (`requireUserSession`) ou do token MCP, e filtra/grava por `user_id`**. Nunca aceitar `user_id` vindo do cliente nem de argumento de tool.
+Sem RLS: **toda rota de servidor e toda tool MCP obtém o usuário do helper "usuário atual" (usuário local no desktop, sessão na web) ou do token MCP, e filtra/grava por `user_id`**. Nunca aceitar `user_id` vindo do cliente nem de argumento de tool. Sem login no desktop, a API local se protege checando `Host`/`Origin` e um segredo por execução entregue só à janela do app.
 
 ## MCP para agentes
 
@@ -55,7 +55,7 @@ Enums como texto; datas como texto ISO; JSON serializado como texto no servidor.
 
 ## Telas (MVP)
 
-1. **Login/Signup** — email + senha.
+1. **Login/Signup** — email + senha (só versão web).
 2. **Hoje** (home) — tarefas de hoje; banner de capacidade ("Você planejou 6h30 para uma janela de 5h — remover algo?"); botão grande "Iniciar Foco" na próxima ação; captura rápida sempre visível (campo + atalho).
 3. **Modo Foco** — tela cheia com uma tarefa, micro-passos, timer visual (Pomodoro configurável), "Concluir" / "Pausar" / "Adiar sem culpa".
 4. **Inbox** — itens sem triagem; ação rápida para atribuir área/projeto/energia/contexto ou decompor.
@@ -73,7 +73,7 @@ Enums como texto; datas como texto ISO; JSON serializado como texto no servidor.
 
 ## Tickets
 
-O trabalho está quebrado em tickets de fatia vertical em `issues/`, numerados em ordem de dependência (cada um lista o que o bloqueia). Pegar sempre o menor número desbloqueado e não concluído. Implementação feita pelo usuário.
+O trabalho está quebrado em tickets de fatia vertical em `issues/`, numerados em ordem de dependência (cada um lista o que o bloqueia). Pegar sempre o menor número desbloqueado e não concluído. Implementação feita pelo usuário. Tickets com `**Milestone:** versão web` (51–53) ficam fora do MVP desktop. Números 03, 04 e 42 foram removidos na reorganização offline-first.
 
 ## Fora de escopo (Fase 2)
 

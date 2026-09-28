@@ -10,4 +10,4 @@
 - [ ] Prévia editável dos passos antes de salvar
 - [ ] Salvar cria subtarefas com estimativa
 - [ ] Falha ou timeout mostra mensagem gentil e não perde nada
-- [ ] Rota exige sessão e limita tamanho da entrada
+- [ ] Rota usa o usuário atual e limita tamanho da entrada

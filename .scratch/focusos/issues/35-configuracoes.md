@@ -2,7 +2,7 @@
 
 **What to build:** O usuário ajusta nome, timezone e tema, e vê o aviso de que o app é ferramenta de apoio, não tratamento.
 
-**Blocked by:** 04
+**Blocked by:** 02
 
 **Status:** ready-for-human
 
