@@ -16,6 +16,7 @@ Package manager is pnpm (`pnpm-lock.yaml`, `pnpm-workspace.yaml`).
 - `pnpm generate` — static site generation
 - `pnpm lint` / `pnpm lint:fix` — oxlint
 - `pnpm fmt` / `pnpm fmt:check` — oxfmt
+- `pnpm db:generate` — generate a migration from `server/db/schema.ts` (drizzle-kit); `pnpm db:studio` — browse the DB
 
 No typecheck or test tooling yet. `npx nuxi typecheck` needs `vue-tsc` and `typescript` as dev deps.
 
@@ -26,7 +27,7 @@ No typecheck or test tooling yet. `npx nuxi typecheck` needs `vue-tsc` and `type
 - `tsconfig.json` only references the generated `.nuxt/tsconfig.*.json` project files — edit TS settings via `nuxt.config.ts` (`typescript` key), not by hand in `.nuxt/`.
 - Adding `app/pages/` switches on file-based routing via vue-router; until then `app.vue` is the whole app.
 - UI components are shadcn-vue, copied into the repo via its CLI (`components.json`), no prefix.
-- Planned architecture, recorded as ADRs in `docs/adr/`: db0 with hand-written SQL and numbered SQL migrations (0001); Electron shell embedding the same Nitro server with a local SQLite (0002); desktop offline-first v1, web version later as an independent instance, no sync (0003); MCP endpoint `/mcp` with per-user Bearer tokens (0004).
+- Planned architecture, recorded as ADRs in `docs/adr/`: Drizzle ORM on `node:sqlite` with drizzle-kit generated migrations applied at boot (0005, supersedes 0001); Electron shell embedding the same Nitro server with a local SQLite (0002); desktop offline-first v1, web version later as an independent instance, no sync (0003); MCP endpoint `/mcp` with per-user Bearer tokens (0004).
 - Security rule for every server route and MCP tool: the user comes from the "current user" helper (auto-created local user on desktop v1, session on the later web version) or the MCP token, never from client input. v1 is desktop offline-first with no login.
 
 ## Agent skills

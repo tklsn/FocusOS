@@ -8,7 +8,7 @@ Gerenciador de tarefas sob medida para um profissional com TDAH (engenheiro de s
 
 - Nuxt 4 SPA (`ssr: false`) + shadcn-vue (port Vue do shadcn/ui, via módulo `shadcn-nuxt`) + Tailwind v4; ícones lucide
 - Backend: rotas de servidor Nitro (`server/api/`)
-- DB: db0 via `useDatabase()` do Nitro, SQL à mão, migrations SQL numeradas aplicadas no boot; conector por ambiente (SQLite em `.data/` no dev). Ver ADR 0001
+- DB: Drizzle ORM com `node:sqlite`, migrations geradas pelo drizzle-kit e aplicadas no boot (SQLite em `.data/` no dev). Ver ADR 0005
 - Desktop: Electron com o servidor Nitro embutido e SQLite em `userData`. Ver ADR 0002
 - **v1 é desktop offline-first**, sem login: um usuário local criado automaticamente. A versão web (multiusuário, instância independente, sem sync) vem depois. Ver ADR 0003
 - Auth (só versão web): sessão por cookie via `nuxt-auth-utils` (email + senha, `hashPassword`/`verifyPassword`)

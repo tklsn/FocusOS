@@ -10,7 +10,7 @@
 - [ ] Servidor escuta só em `127.0.0.1`, em porta preferida fixa com fallback para uma livre
 - [ ] Banco SQLite em `userData`; migrations aplicadas no boot
 - [ ] Dados sobrevivem a fechar e reabrir o app
-- [ ] Conector do banco sem rebuild nativo quebrado no Electron (ADR 0001)
+- [ ] Conector do banco sem rebuild nativo quebrado no Electron; pasta de migrations empacotada e apontada por `DB_MIGRATIONS_DIR` (ADR 0005)
 - [ ] Funciona sem internet
 
 ## Comments

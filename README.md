@@ -140,14 +140,14 @@ As referências abaixo calibram as decisões de produto; não são exibidas no a
 │  │ Tailwind v4      │         │  /mcp    agentes (token)    │◀─┼── Claude Code
 │  └──────────────────┘         │     │                       │  │   e outros
 │                               │     ▼                       │  │
-│                               │  db0 ──▶ SQLite (userData)  │  │
+│                               │ Drizzle ▶ SQLite (userData) │  │
 │                               └─────────────────────────────┘  │
 └────────────────────────────────────────────────────────────────┘
 ```
 
 - **Interface:** Nuxt 4 em modo SPA, com [shadcn-vue](https://www.shadcn-vue.com/), Tailwind v4 e ícones lucide.
 - **Servidor:** Nitro, o mesmo código do Nuxt. As rotas `/api/*` atendem a interface e o `/mcp` atende os agentes. As duas chamam as mesmas funções de regra de negócio.
-- **Banco:** [db0](https://db0.unjs.io/) com SQL escrito à mão. As migrations são arquivos SQL numerados, aplicados no boot. No desktop o SQLite fica na pasta de dados do usuário.
+- **Banco:** [Drizzle ORM](https://orm.drizzle.team/) com `node:sqlite`. As migrations são geradas pelo `drizzle-kit` e aplicadas no boot. No desktop o SQLite fica na pasta de dados do usuário.
 - **Desktop (v1):** Electron sobe o servidor Nitro embutido em `127.0.0.1` e abre a janela nele. Funciona offline e não tem login: um usuário local é criado no primeiro uso.
 - **Segurança local:** sem login, a API confere `Host` e `Origin` e exige um segredo gerado a cada abertura, entregue só à janela do app. Assim, sites abertos no navegador não conseguem chamar o servidor local. O `/mcp` exige token Bearer, guardado só como hash.
 - **Isolamento por usuário:** toda rota e toda tool obtém o usuário do servidor (usuário local, sessão ou token), nunca de um dado enviado pelo cliente.

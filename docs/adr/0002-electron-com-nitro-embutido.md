@@ -18,7 +18,7 @@ Em desenvolvimento, a janela carrega o `nuxt dev`. O renderer não recebe acesso
 
 ## Alternativas descartadas
 
-- **Tauri:** binário bem menor, mas o backend é Rust. Rodar Nitro, db0 e MCP exigiria empacotar um Node como sidecar ou reescrever o backend.
+- **Tauri:** binário bem menor, mas o backend é Rust. Rodar Nitro, o banco e MCP exigiria empacotar um Node como sidecar ou reescrever o backend.
 
 ## Consequências
 

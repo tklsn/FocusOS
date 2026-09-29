@@ -1,6 +1,6 @@
 # 0001: db0 em vez de Drizzle
 
-**Status:** aceito (2026-09-28)
+**Status:** substituído pela 0005 (2026-09-29)
 
 ## Contexto
 
