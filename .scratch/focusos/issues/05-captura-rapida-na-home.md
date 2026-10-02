@@ -4,9 +4,9 @@
 
 **Blocked by:** 02
 
-**Status:** ready-for-human
+**Status:** done
 
-- [ ] Tabela de tarefas criada com o mínimo necessário (id, user_id, title, status, created_at)
-- [ ] Enter cria a tarefa com status inbox e limpa o campo, que continua com foco
-- [ ] Título vazio é ignorado sem erro
-- [ ] Feedback discreto de "capturado"
+- [x] Tabela de tarefas criada com o mínimo necessário (id, user_id, title, status, created_at)
+- [x] Enter cria a tarefa com status inbox e limpa o campo, que continua com foco
+- [x] Título vazio é ignorado sem erro
+- [x] Feedback discreto de "capturado"

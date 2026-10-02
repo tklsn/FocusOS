@@ -30,7 +30,7 @@ export async function createLocalAccount(): Promise<void> {
 }
 
 export async function loadLocalAccount() {
-  return db
+  const account = db
     .select()
     .from(accounts)
     .where(
@@ -40,4 +40,5 @@ export async function loadLocalAccount() {
       ),
     )
     .get();
+  return account;
 }
