@@ -30,4 +30,27 @@ export class TaskService {
 
     return rows;
   }
+
+  async updateTask(
+    userId: string,
+    id: string,
+    data: Pick<Partial<typeof tasks.$inferInsert>, "title" | "notes">,
+  ): Promise<typeof tasks.$inferSelect | undefined> {
+    const [row] = await db
+      .update(tasks)
+      .set(data)
+      .where(and(eq(tasks.id, id), eq(tasks.user_id, userId)))
+      .returning();
+
+    return row;
+  }
+
+  async deleteTask(userId: string, id: string): Promise<boolean> {
+    const rows = await db
+      .delete(tasks)
+      .where(and(eq(tasks.id, id), eq(tasks.user_id, userId)))
+      .returning({ id: tasks.id });
+
+    return rows.length > 0;
+  }
 }

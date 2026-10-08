@@ -68,6 +68,7 @@ export const tasks = sqliteTable(
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     title: text().notNull(),
+    notes: text(),
     status: text({
       enum: TASK_STATUSES,
     })
