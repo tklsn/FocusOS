@@ -1,5 +1,5 @@
 import { tasks } from "../db/schema";
-import { eq, desc } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 
 export class TaskService {
   async createTask(
@@ -16,11 +16,16 @@ export class TaskService {
 
   async findTasksByUserId(
     userId: string,
+    status?: (typeof tasks.$inferSelect)["status"],
   ): Promise<(typeof tasks.$inferSelect)[]> {
     const rows = await db
       .select()
       .from(tasks)
-      .where(eq(tasks.user_id, userId))
+      .where(
+        status
+          ? and(eq(tasks.user_id, userId), eq(tasks.status, status))
+          : eq(tasks.user_id, userId),
+      )
       .orderBy(desc(tasks.created_at));
 
     return rows;

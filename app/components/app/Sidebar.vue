@@ -1,15 +1,24 @@
 <script setup lang="ts">
-import type { SidebarProps } from "@/components/ui/sidebar"
+import type { SidebarProps } from "@/components/ui/sidebar";
 
-import { FocusIcon, Inbox, Settings, Sun } from "@lucide/vue"
+import { FocusIcon, Inbox, Settings, Sun } from "@lucide/vue";
 
-const props = withDefaults(defineProps<SidebarProps>(), { variant: "inset" })
+const props = withDefaults(defineProps<SidebarProps>(), { variant: "inset" });
 
-const navMain = [
+const { data: inboxTasks } = useInboxTasks();
+
+const navMain = computed(() => [
   { title: "Hoje", url: "/", icon: Sun },
-  { title: "Inbox", url: "/inbox", icon: Inbox },
-]
-const navFooter = [{ title: "Configurações", url: "/settings", icon: Settings }]
+  {
+    title: "Inbox",
+    url: "/inbox",
+    icon: Inbox,
+    badge: inboxTasks.value?.length ?? 0,
+  },
+]);
+const navFooter = [
+  { title: "Configurações", url: "/settings", icon: Settings },
+];
 </script>
 
 <template>
@@ -20,7 +29,8 @@ const navFooter = [{ title: "Configurações", url: "/settings", icon: Settings 
           <SidebarMenuButton size="lg" as-child>
             <NuxtLink to="/">
               <div
-                class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
+              >
                 <FocusIcon class="size-4" />
               </div>
               <div class="grid flex-1 text-left text-sm leading-tight">

@@ -54,6 +54,8 @@ export const accounts = sqliteTable(
   ],
 );
 
+export const TASK_STATUSES = ["inbox", "todo", "doing", "done"] as const;
+
 export const tasks = sqliteTable(
   "tasks",
   {
@@ -67,7 +69,7 @@ export const tasks = sqliteTable(
       .references(() => users.id, { onDelete: "cascade" }),
     title: text().notNull(),
     status: text({
-      enum: ["inbox", "todo", "doing", "done"],
+      enum: TASK_STATUSES,
     })
       .notNull()
       .default("inbox"),

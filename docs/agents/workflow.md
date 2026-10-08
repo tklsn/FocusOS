@@ -15,12 +15,12 @@ As Scrum Master the agent plans sprints, keeps ticket statuses current and surfa
 
 Tickets are local markdown files (see `issue-tracker.md`). The `**Status:**` line moves through:
 
-| Status            | Meaning                                          | Who sets it                  |
-| ----------------- | ------------------------------------------------ | ---------------------------- |
-| `ready-for-human` | Specified and waiting for the developer          | Agent (PO) when writing it   |
-| `in-progress`     | Developer is working on it                       | Agent, when the human says they started |
-| `in-review`       | Developer says it is done; review pending        | Agent, when review is requested |
-| `done`            | Review approved and every criterion checked      | Agent (PO) on acceptance     |
+| Status            | Meaning                                     | Who sets it                             |
+| ----------------- | ------------------------------------------- | --------------------------------------- |
+| `ready-for-human` | Specified and waiting for the developer     | Agent (PO) when writing it              |
+| `in-progress`     | Developer is working on it                  | Agent, when the human says they started |
+| `in-review`       | Developer says it is done; review pending   | Agent, when review is requested         |
+| `done`            | Review approved and every criterion checked | Agent (PO) on acceptance                |
 
 A ticket can start only when every ticket in its `**Blocked by:**` line is `done`. Pick the lowest-numbered unblocked ticket unless the sprint says otherwise.
 

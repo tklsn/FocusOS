@@ -5,10 +5,6 @@ import { toast } from "vue-sonner";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 
-const emit = defineEmits<{
-  (e: "added-task"): void;
-}>();
-
 const formSchema = z.object({
   task: z
     .string({
@@ -27,12 +23,11 @@ const { defineField, resetForm, handleSubmit, errors } = useForm({
 const [task, taskAttrs] = defineField("task");
 
 const addTask = handleSubmit(async (values) => {
-  console.log("Task added:", values.task);
   await $fetch("/api/tasks", {
     method: "POST",
     body: { title: values.task },
   });
-  emit("added-task");
+  refreshNuxtData("inbox-tasks");
   toast.success("Tarefa capturada com sucesso!");
   resetForm();
 });

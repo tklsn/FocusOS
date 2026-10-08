@@ -13,7 +13,7 @@ O mesmo código roda como site multiusuário e como app desktop com banco local.
 
 Toda rota obtém o usuário por um helper "usuário atual": no desktop devolve o usuário local; na web, o usuário da sessão. Assim a versão web entra sem mudar as rotas. O código não ramifica por plataforma além da configuração (conector do banco, modo web ligado ou não).
 
-*Revisado em 2026-09-28: antes, o desktop também teria cadastro e login, com "usar sem conta" opcional.*
+_Revisado em 2026-09-28: antes, o desktop também teria cadastro e login, com "usar sem conta" opcional._
 
 ## Consequências
 

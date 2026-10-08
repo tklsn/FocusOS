@@ -6,8 +6,6 @@ const today = new Date().toLocaleDateString("pt-BR", {
   day: "numeric",
   month: "long",
 });
-
-const { data: tasks, pending, refresh } = await useFetch("/api/tasks", {});
 </script>
 
 <template>
@@ -19,22 +17,17 @@ const { data: tasks, pending, refresh } = await useFetch("/api/tasks", {});
       </p>
     </header>
 
-    <TaskFastAddInput @added-task="refresh" />
+    <TaskFastAddInput />
 
-    <template v-if="tasks && tasks.length > 0">
-      {{ tasks }}
-    </template>
-
-    <Empty v-else>
+    <Empty>
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <Sun />
         </EmptyMedia>
         <EmptyTitle>Hoje está livre.</EmptyTitle>
-        <EmptyDescription
-          >Quando algo surgir, é só capturar, sem precisar organizar
-          agora.</EmptyDescription
-        >
+        <EmptyDescription>
+          Quando algo surgir, é só capturar, sem precisar organizar agora.
+        </EmptyDescription>
       </EmptyHeader>
     </Empty>
   </div>
