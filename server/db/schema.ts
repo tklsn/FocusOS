@@ -107,3 +107,32 @@ export const areas = sqliteTable(
   },
   (t) => [index("idx_areas_user_id").on(t.user_id)],
 );
+
+export const PROJECT_STATUSES = ["active", "paused", "done"] as const;
+
+export const projects = sqliteTable(
+  "projects",
+  {
+    id: text({
+      length: 26,
+    })
+      .$defaultFn(() => ulid())
+      .primaryKey(),
+    user_id: text()
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    area_id: text()
+      .notNull()
+      .references(() => areas.id, { onDelete: "cascade" }),
+    name: text().notNull(),
+    description: text(),
+    status: text({ enum: PROJECT_STATUSES }).notNull().default("active"),
+    created_at: integer({ mode: "timestamp_ms" })
+      .$defaultFn(() => new Date())
+      .notNull(),
+  },
+  (t) => [
+    index("idx_projects_user_id").on(t.user_id),
+    index("idx_projects_area_id").on(t.area_id),
+  ],
+);

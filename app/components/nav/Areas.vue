@@ -2,7 +2,12 @@
 import { Shapes } from "@lucide/vue";
 
 const { data: areas } = useAreas();
+const { data: projects } = useProjects();
 const route = useRoute();
+
+const projectsByArea = computed(() =>
+  Object.groupBy(projects.value ?? [], (project) => project.area_id),
+);
 </script>
 
 <template>
@@ -10,8 +15,12 @@ const route = useRoute();
     <SidebarGroupLabel>Áreas</SidebarGroupLabel>
     <SidebarMenu>
       <SidebarMenuItem v-for="area in areas" :key="area.id">
-        <SidebarMenuButton as-child :tooltip="area.name">
-          <NuxtLink :to="{ path: '/areas', hash: `#area-${area.id}` }">
+        <SidebarMenuButton
+          as-child
+          :tooltip="area.name"
+          :is-active="route.path === `/areas/${area.id}`"
+        >
+          <NuxtLink :to="`/areas/${area.id}`">
             <component
               :is="AREA_ICON_STYLES[area.icon].component"
               :class="AREA_COLOR_STYLES[area.color].text"
@@ -19,6 +28,23 @@ const route = useRoute();
             <span>{{ area.name }}</span>
           </NuxtLink>
         </SidebarMenuButton>
+        <SidebarMenuSub v-if="projectsByArea[area.id]">
+          <SidebarMenuSubItem
+            v-for="project in projectsByArea[area.id]"
+            :key="project.id"
+          >
+            <SidebarMenuSubButton as-child>
+              <NuxtLink
+                :to="{
+                  path: `/areas/${area.id}`,
+                  hash: `#project-${project.id}`,
+                }"
+              >
+                <span>{{ project.name }}</span>
+              </NuxtLink>
+            </SidebarMenuSubButton>
+          </SidebarMenuSubItem>
+        </SidebarMenuSub>
       </SidebarMenuItem>
       <SidebarMenuItem>
         <SidebarMenuButton

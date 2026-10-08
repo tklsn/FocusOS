@@ -3,6 +3,7 @@ import { Shapes } from "@lucide/vue";
 import { toast } from "vue-sonner";
 
 const { data: areas, status, error, refresh } = useAreas();
+const { data: projects, refresh: refreshProjects } = useProjects();
 
 const newName = ref("");
 const creating = ref(false);
@@ -29,7 +30,19 @@ function createArea() {
   if (name) createAreas([{ name }]);
 }
 
-function deleteArea(id: string) {
+// Área com projetos: decisão explícita em vez de "Desfazer".
+const confirming = ref<{ id: string; name: string; projects: number }>();
+const confirmOpen = ref(false);
+
+function deleteArea(id: string, name: string) {
+  const count =
+    projects.value?.filter((project) => project.area_id === id).length ?? 0;
+  if (count > 0) {
+    confirming.value = { id, name, projects: count };
+    confirmOpen.value = true;
+    return;
+  }
+
   pendingAreaDeletes.add(id);
   areas.value = areas.value?.filter((area) => area.id !== id);
 
@@ -41,6 +54,22 @@ function deleteArea(id: string) {
       refresh();
     },
   );
+}
+
+async function deleteAreaWithProjects() {
+  const id = confirming.value?.id;
+  if (!id) return;
+  try {
+    await $fetch(`/api/areas/${id}`, {
+      method: "DELETE",
+      query: { cascade: true },
+    });
+    toast("Área e projetos excluídos");
+  } catch {
+    toast.error("Não foi possível excluir a área. Tente novamente.");
+  }
+  refresh();
+  refreshProjects();
 }
 </script>
 
@@ -79,7 +108,7 @@ function deleteArea(id: string) {
         v-for="area in areas"
         :key="area.id"
         :area="area"
-        @delete="deleteArea(area.id)"
+        @delete="deleteArea(area.id, area.name)"
       />
     </ul>
 
@@ -114,5 +143,26 @@ function deleteArea(id: string) {
         </Button>
       </EmptyContent>
     </Empty>
+
+    <AlertDialog v-model:open="confirmOpen">
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            Excluir "{{ confirming?.name }}" e seus projetos?
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            Esta área tem {{ confirming?.projects }}
+            {{ confirming?.projects === 1 ? "projeto" : "projetos" }}. Eles
+            serão excluídos junto, e não dá para desfazer.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Manter área</AlertDialogCancel>
+          <AlertDialogAction @click="deleteAreaWithProjects">
+            Excluir área e projetos
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   </div>
 </template>
