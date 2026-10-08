@@ -43,6 +43,7 @@ const navFooter = [
     </SidebarHeader>
     <SidebarContent>
       <NavMain :items="navMain" />
+      <NavAreas />
     </SidebarContent>
     <SidebarFooter>
       <NavMain :items="navFooter" />
