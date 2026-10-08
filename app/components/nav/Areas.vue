@@ -33,13 +33,11 @@ const projectsByArea = computed(() =>
             v-for="project in projectsByArea[area.id]"
             :key="project.id"
           >
-            <SidebarMenuSubButton as-child>
-              <NuxtLink
-                :to="{
-                  path: `/areas/${area.id}`,
-                  hash: `#project-${project.id}`,
-                }"
-              >
+            <SidebarMenuSubButton
+              as-child
+              :is-active="route.path === `/projects/${project.id}`"
+            >
+              <NuxtLink :to="`/projects/${project.id}`">
                 <span>{{ project.name }}</span>
               </NuxtLink>
             </SidebarMenuSubButton>

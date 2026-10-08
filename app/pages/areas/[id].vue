@@ -46,11 +46,12 @@ function deleteProject(id: string) {
   projects.value = projects.value?.filter((project) => project.id !== id);
 
   toastUndo(
-    "Projeto excluído",
+    "Projeto excluído. As tarefas dele voltam para a Inbox.",
     () => $fetch(`/api/projects/${id}`, { method: "DELETE" }),
     () => {
       pendingProjectDeletes.delete(id);
       refresh();
+      refreshNuxtData("inbox-tasks");
     },
   );
 }

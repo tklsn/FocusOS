@@ -6,7 +6,8 @@ const props = defineProps<{
   task: { id: string; title: string; notes: string | null; created_at: string };
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
+  (e: "saved"): void;
   (e: "delete"): void;
 }>();
 
@@ -30,7 +31,7 @@ async function save(field: "title" | "notes") {
       method: "PATCH",
       body: { [field]: value },
     });
-    refreshNuxtData("inbox-tasks");
+    emit("saved");
   } catch {
     model.value = saved;
     toast.error("Não foi possível salvar. Tente novamente.");
@@ -50,6 +51,7 @@ function cancelTitle(e: KeyboardEvent) {
 <template>
   <li class="flex flex-col gap-2 px-2 py-2">
     <div class="flex items-center gap-2">
+      <slot name="leading" />
       <Input
         v-model="title"
         aria-label="Título da tarefa"

@@ -4,14 +4,14 @@ import { Inbox } from "@lucide/vue";
 const { data: tasks, status, error, refresh } = useInboxTasks();
 
 function deleteTask(id: string) {
-  pendingInboxDeletes.add(id);
+  pendingTaskDeletes.add(id);
   tasks.value = tasks.value?.filter((task) => task.id !== id);
 
   toastUndo(
     "Tarefa excluída",
     () => $fetch(`/api/tasks/${id}`, { method: "DELETE" }),
     () => {
-      pendingInboxDeletes.delete(id);
+      pendingTaskDeletes.delete(id);
       refresh();
     },
   );
@@ -40,10 +40,11 @@ function deleteTask(id: string) {
       v-else-if="tasks && tasks.length > 0"
       class="flex flex-col divide-y rounded-lg border bg-card"
     >
-      <TaskInboxItem
+      <TaskItem
         v-for="task in tasks"
         :key="task.id"
         :task="task"
+        @saved="refresh()"
         @delete="deleteTask(task.id)"
       />
     </ul>

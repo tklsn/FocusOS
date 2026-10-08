@@ -68,6 +68,7 @@ export const tasks = sqliteTable(
     user_id: text()
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
+    project_id: text().references(() => projects.id, { onDelete: "set null" }),
     title: text().notNull(),
     notes: text(),
     status: text({
@@ -75,6 +76,7 @@ export const tasks = sqliteTable(
     })
       .notNull()
       .default("inbox"),
+    sort_order: integer().notNull().default(0),
     created_at: integer({ mode: "timestamp_ms" })
       .$defaultFn(() => new Date())
       .notNull(),
@@ -83,7 +85,10 @@ export const tasks = sqliteTable(
       .$onUpdate(() => new Date())
       .notNull(),
   },
-  (t) => [index("idx_tasks_user_id_status").on(t.user_id, t.status)],
+  (t) => [
+    index("idx_tasks_user_id_status").on(t.user_id, t.status),
+    index("idx_tasks_project_id").on(t.project_id),
+  ],
 );
 
 export const areas = sqliteTable(

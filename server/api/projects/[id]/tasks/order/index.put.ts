@@ -2,8 +2,7 @@ import { z } from "zod";
 import { TaskService } from "~~/server/services/task.service";
 
 const bodySchema = z.object({
-  title: z.string().trim().min(1),
-  project_id: z.string().min(1).optional(),
+  ids: z.array(z.string().min(1)).max(1000),
 });
 
 export default defineLazyEventHandler(() => {
@@ -16,24 +15,16 @@ export default defineLazyEventHandler(() => {
     if (!parsed.success) {
       throw createError({
         statusCode: 400,
-        message: "Campos 'title' ou 'project_id' inválidos",
+        message: "Campo 'ids' inválido",
       });
     }
 
-    const { title, project_id } = parsed.data;
-    if (!project_id) {
-      return __taskService.createTask({ user_id: user.id, title });
-    }
-
-    const task = await __taskService.createProjectTask(
+    await __taskService.reorderProjectTasks(
       user.id,
-      project_id,
-      title,
+      getRouterParam(event, "id")!,
+      parsed.data.ids,
     );
-    if (!task) {
-      throw createError({ statusCode: 404, message: "Projeto não encontrado" });
-    }
 
-    return task;
+    return sendNoContent(event);
   });
 });

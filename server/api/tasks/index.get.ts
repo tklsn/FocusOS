@@ -4,6 +4,7 @@ import { TASK_STATUSES } from "~~/server/db/schema";
 
 const querySchema = z.object({
   status: z.enum(TASK_STATUSES).optional(),
+  project_id: z.string().min(1).optional(),
 });
 
 export default defineLazyEventHandler(() => {
@@ -16,14 +17,11 @@ export default defineLazyEventHandler(() => {
     if (!parsed.success) {
       throw createError({
         statusCode: 400,
-        message: "Parâmetro 'status' inválido",
+        message: "Parâmetros 'status' ou 'project_id' inválidos",
       });
     }
 
-    const tasks = await __taskService.findTasksByUserId(
-      user.id,
-      parsed.data.status,
-    );
+    const tasks = await __taskService.findTasksByUserId(user.id, parsed.data);
 
     return tasks;
   });

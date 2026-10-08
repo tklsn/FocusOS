@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Trash2 } from "@lucide/vue";
+import { ArrowRight, Trash2 } from "@lucide/vue";
 import { toast } from "vue-sonner";
 
 const props = defineProps<{ project: { id: string; name: string } }>();
@@ -52,6 +52,12 @@ function cancelName(e: KeyboardEvent) {
       @keydown.enter="blur"
       @keydown.esc="cancelName"
     />
+    <Button variant="ghost" size="icon-sm" as-child>
+      <NuxtLink :to="`/projects/${project.id}`">
+        <ArrowRight />
+        <span class="sr-only">Abrir projeto</span>
+      </NuxtLink>
+    </Button>
     <Button
       variant="ghost"
       size="icon-sm"

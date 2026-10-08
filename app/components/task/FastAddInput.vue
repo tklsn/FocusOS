@@ -21,6 +21,9 @@ const [task, taskAttrs] = defineField("task");
 const textarea = useTemplateRef("textarea");
 onMounted(() => textarea.value?.$el.focus());
 
+// Com projectId a tarefa nasce no projeto; sem, vai para a Inbox.
+const props = defineProps<{ projectId?: string }>();
+
 const emit = defineEmits<{
   (e: "created"): void;
 }>();
@@ -29,7 +32,7 @@ const addTask = handleSubmit(async (values) => {
   try {
     await $fetch("/api/tasks", {
       method: "POST",
-      body: { title: values.task },
+      body: { title: values.task, project_id: props.projectId },
     });
     refreshNuxtData("inbox-tasks");
     toast.success("Tarefa capturada com sucesso!");

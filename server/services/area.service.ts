@@ -1,5 +1,8 @@
-import { areas } from "../db/schema";
+import { areas, projects } from "../db/schema";
 import { and, asc, eq } from "drizzle-orm";
+import { TaskService } from "./task.service";
+
+const taskService = new TaskService();
 
 type AreaFields = Pick<typeof areas.$inferInsert, "name" | "color" | "icon">;
 
@@ -44,7 +47,16 @@ export class AreaService {
     return row;
   }
 
+  // Os projetos da área saem junto (FK cascade); as tarefas deles voltam para a Inbox.
   async deleteArea(userId: string, id: string): Promise<boolean> {
+    await taskService.moveToInbox(
+      userId,
+      db
+        .select({ id: projects.id })
+        .from(projects)
+        .where(and(eq(projects.area_id, id), eq(projects.user_id, userId))),
+    );
+
     const rows = await db
       .delete(areas)
       .where(and(eq(areas.id, id), eq(areas.user_id, userId)))

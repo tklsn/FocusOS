@@ -70,6 +70,7 @@ async function deleteAreaWithProjects() {
   }
   refresh();
   refreshProjects();
+  refreshNuxtData("inbox-tasks");
 }
 </script>
 
@@ -153,7 +154,8 @@ async function deleteAreaWithProjects() {
           <AlertDialogDescription>
             Esta área tem {{ confirming?.projects }}
             {{ confirming?.projects === 1 ? "projeto" : "projetos" }}. Eles
-            serão excluídos junto, e não dá para desfazer.
+            serão excluídos junto, e não dá para desfazer. As tarefas deles
+            voltam para a Inbox.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

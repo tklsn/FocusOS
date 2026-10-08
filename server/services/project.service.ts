@@ -1,5 +1,8 @@
 import { areas, projects } from "../db/schema";
 import { and, asc, eq } from "drizzle-orm";
+import { TaskService } from "./task.service";
+
+const taskService = new TaskService();
 
 export class ProjectService {
   async findProjectsByUserId(
@@ -61,6 +64,8 @@ export class ProjectService {
   }
 
   async deleteProject(userId: string, id: string): Promise<boolean> {
+    await taskService.moveToInbox(userId, [id]);
+
     const rows = await db
       .delete(projects)
       .where(and(eq(projects.id, id), eq(projects.user_id, userId)))
