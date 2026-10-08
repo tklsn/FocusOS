@@ -1,5 +1,6 @@
 <template>
   <SidebarProvider>
+    <TaskCaptureDialog />
     <AppSidebar />
     <SidebarInset>
       <header class="flex h-12 items-center px-4">

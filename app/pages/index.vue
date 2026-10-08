@@ -17,7 +17,17 @@ const today = new Date().toLocaleDateString("pt-BR", {
       </p>
     </header>
 
-    <TaskFastAddInput />
+    <TaskFastAddInput>
+      <template #message>
+        <p class="text-muted-foreground text-sm">
+          Use
+          <Kbd>{{ isMac ? "⌘" : "Ctrl" }}</Kbd>
+          <span>+</span>
+          <Kbd>I</Kbd>
+          para abrir este campo rapidamente de qualquer lugar.
+        </p>
+      </template>
+    </TaskFastAddInput>
 
     <Empty>
       <EmptyHeader>
