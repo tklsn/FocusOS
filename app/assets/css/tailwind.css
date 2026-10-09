@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+@import "@fontsource-variable/jetbrains-mono";
 
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -6,7 +6,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --font-mono: "JetBrains Mono", monospace;
+  --font-mono: "JetBrains Mono Variable", monospace;
 }
 
 @theme inline {

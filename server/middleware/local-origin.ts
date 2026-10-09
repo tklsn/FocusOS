@@ -1,6 +1,15 @@
-// Bloqueia sites abertos no navegador chamando o servidor em 127.0.0.1:
-// Host precisa ser local (contra DNS rebinding) e Origin, quando presente, o próprio servidor.
-// ponytail: só hosts locais; a versão web (ADR 0003) vai precisar do domínio público aqui.
+import { timingSafeEqual } from "node:crypto";
+
+const secret = process.env.FOCUSOS_API_SECRET;
+
+function hasSecret(given = "") {
+  return (
+    !secret ||
+    (given.length === secret.length &&
+      timingSafeEqual(Buffer.from(given), Buffer.from(secret)))
+  );
+}
+
 const LOCAL_HOSTNAMES = new Set(["localhost", "127.0.0.1", "[::1]"]);
 
 export default defineEventHandler((event) => {
@@ -15,4 +24,8 @@ export default defineEventHandler((event) => {
     origin !== undefined &&
     (!URL.canParse(origin) || new URL(origin).host !== host);
   if (badHost || badOrigin) throw createError({ statusCode: 403 });
+
+  if (!hasSecret(getRequestHeader(event, "x-focusos-secret"))) {
+    throw createError({ statusCode: 403 });
+  }
 });

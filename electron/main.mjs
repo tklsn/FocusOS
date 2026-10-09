@@ -1,12 +1,35 @@
-import { app, BrowserWindow, Menu, shell } from "electron";
+import { app, BrowserWindow, Menu, session, shell } from "electron";
 import { spawn } from "node:child_process";
+import { randomBytes } from "node:crypto";
+import { createServer } from "node:net";
+import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 
 const isDev = process.argv.includes("--dev");
+const HOST = "127.0.0.1";
+const PREFERRED_PORT = 41730;
 
 const DEV_ORIGIN = "http://localhost:3000";
+const SECRET_HEADER = "x-focusos-secret";
+
+const secret = randomBytes(32).toString("hex");
 
 let origin;
 let devServer;
+
+function pickPort(port) {
+  return new Promise((resolve, reject) => {
+    const probe = createServer();
+    probe.once("error", (error) => {
+      if (port === 0) reject(error);
+      else resolve(pickPort(0));
+    });
+    probe.listen(port, HOST, () => {
+      const chosen = probe.address().port;
+      probe.close(() => resolve(chosen));
+    });
+  });
+}
 
 async function waitForServer(url) {
   for (let attempt = 0; attempt < 300; attempt++) {
@@ -39,6 +62,37 @@ async function startDevServer() {
     env: { ...process.env, APP_MODE: "local" },
   });
   devServer.once("exit", () => app.quit());
+  await waitForServer(origin);
+}
+
+async function startEmbeddedServer() {
+  const port = await pickPort(PREFERRED_PORT);
+  origin = `http://${HOST}:${port}`;
+
+  const root = app.isPackaged ? process.resourcesPath : app.getAppPath();
+  Object.assign(process.env, {
+    APP_MODE: "local",
+    FOCUSOS_API_SECRET: secret,
+    NITRO_HOST: HOST,
+    NITRO_PORT: String(port),
+    DB_FILE_NAME: join(app.getPath("userData"), "focusos.db"),
+    DB_MIGRATIONS_DIR: app.isPackaged
+      ? join(root, "migrations")
+      : join(root, "server/db/migrations"),
+  });
+  const entry = app.isPackaged
+    ? join(root, "server/server/index.mjs")
+    : join(root, ".output/server/index.mjs");
+  await import(pathToFileURL(entry).href);
+
+  session.defaultSession.webRequest.onBeforeSendHeaders(
+    { urls: [`${origin}/*`] },
+    (details, callback) => {
+      details.requestHeaders[SECRET_HEADER] = secret;
+      callback({ requestHeaders: details.requestHeaders });
+    },
+  );
+
   await waitForServer(origin);
 }
 
@@ -111,23 +165,23 @@ function buildMenu() {
   return Menu.buildFromTemplate([
     ...(isMac
       ? [
-          {
-            label: app.name,
-            submenu: [
-              { role: "about", label: `Sobre o ${app.name}` },
-              { type: "separator" },
-              settings,
-              { type: "separator" },
-              { role: "services", label: "Serviços" },
-              { type: "separator" },
-              { role: "hide", label: `Ocultar ${app.name}` },
-              { role: "hideOthers", label: "Ocultar Outros" },
-              { role: "unhide", label: "Mostrar Todos" },
-              { type: "separator" },
-              { role: "quit", label: `Encerrar ${app.name}` },
-            ],
-          },
-        ]
+        {
+          label: app.name,
+          submenu: [
+            { role: "about", label: `Sobre o ${app.name}` },
+            { type: "separator" },
+            settings,
+            { type: "separator" },
+            { role: "services", label: "Serviços" },
+            { type: "separator" },
+            { role: "hide", label: `Ocultar ${app.name}` },
+            { role: "hideOthers", label: "Ocultar Outros" },
+            { role: "unhide", label: "Mostrar Todos" },
+            { type: "separator" },
+            { role: "quit", label: `Encerrar ${app.name}` },
+          ],
+        },
+      ]
       : []),
     {
       label: "Arquivo",
@@ -183,11 +237,11 @@ function buildMenu() {
         { role: "reload", label: "Recarregar" },
         ...(isDev
           ? [
-              {
-                role: "toggleDevTools",
-                label: "Ferramentas de Desenvolvimento",
-              },
-            ]
+            {
+              role: "toggleDevTools",
+              label: "Ferramentas de Desenvolvimento",
+            },
+          ]
           : []),
         { type: "separator" },
         { role: "resetZoom", label: "Tamanho Real" },
@@ -205,9 +259,9 @@ function buildMenu() {
         { role: "zoom", label: "Zoom" },
         ...(isMac
           ? [
-              { type: "separator" },
-              { role: "front", label: "Trazer Todas para a Frente" },
-            ]
+            { type: "separator" },
+            { role: "front", label: "Trazer Todas para a Frente" },
+          ]
           : []),
       ],
     },
@@ -227,7 +281,7 @@ if (!app.requestSingleInstanceLock()) {
   });
 
   app.whenReady().then(async () => {
-    await startDevServer();
+    await (isDev ? startDevServer() : startEmbeddedServer());
 
     Menu.setApplicationMenu(buildMenu());
     createWindow();

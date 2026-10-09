@@ -16,6 +16,7 @@ Package manager is pnpm (`pnpm-lock.yaml`, `pnpm-workspace.yaml`).
 - `pnpm generate` — static site generation
 - `pnpm lint` / `pnpm lint:fix` — oxlint
 - `pnpm fmt` / `pnpm fmt:check` — oxfmt
+- `pnpm dev:desktop` — janela Electron carregando o `nuxt dev`; `pnpm start:desktop` — servidor embutido sem empacotar; `pnpm build:desktop` — instalador macOS em `dist/`
 - `pnpm db:generate` — generate a migration from `server/db/schema.ts` (drizzle-kit); `pnpm db:studio` — browse the DB
 
 No typecheck or test tooling yet. `npx nuxi typecheck` needs `vue-tsc` and `typescript` as dev deps.
