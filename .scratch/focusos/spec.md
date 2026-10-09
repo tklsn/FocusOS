@@ -75,6 +75,10 @@ Enums como texto; datas como texto ISO; JSON serializado como texto no servidor.
 
 O trabalho está quebrado em tickets de fatia vertical em `issues/`, numerados em ordem de dependência (cada um lista o que o bloqueia). Pegar sempre o menor número desbloqueado e não concluído. Implementação feita pelo usuário. Tickets com `**Milestone:** versão web` (51–53) ficam fora do MVP desktop. Números 03, 04 e 42 foram removidos na reorganização offline-first.
 
+### Triagem assistida por modelo local (54–58)
+
+Opcional e posterior ao MVP: um modelo de linguagem pequeno, rodando na máquina, sugere projeto, energia e contexto na triagem da Inbox. Depende do resultado do spike 54; sem "go", os tickets 55 a 58 são descartados.
+
 ## Fora de escopo (Fase 2)
 
 Planejamento/shutdown guiados, calendário/timeboxing por arrastar, integração GitHub/calendário, recorrências, body doubling, relatórios estimado-vs-real, Kanban de sprint, templates de rotina, PWA/mobile, sync entre desktop e web, MCP via stdio, atalho de captura global do sistema operacional, auto-update e assinatura do instalador desktop.
