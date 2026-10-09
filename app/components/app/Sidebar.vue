@@ -23,11 +23,11 @@ const navFooter = [
 
 <template>
   <Sidebar v-bind="props">
-    <SidebarHeader>
+    <SidebarHeader :class="isDesktopMac && 'pt-10 [-webkit-app-region:drag]'">
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton size="lg" as-child>
-            <NuxtLink to="/">
+            <NuxtLink to="/" class="[-webkit-app-region:no-drag]">
               <div
                 class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
               >

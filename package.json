@@ -1,7 +1,10 @@
 {
   "name": "FocusOS",
+  "version": "0.1.0",
   "private": true,
+  "description": "Gerenciador de tarefas offline-first",
   "type": "module",
+  "main": "electron/main.mjs",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -13,7 +16,8 @@
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "db:generate": "drizzle-kit generate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "dev:desktop": "electron . --dev"
   },
   "dependencies": {
     "@lucide/vue": "^1.48.0",
@@ -40,6 +44,7 @@
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^26.6.3",
     "drizzle-kit": "1.0.0-rc.4",
+    "electron": "^44.7.0",
     "oxfmt": "^0.70.0",
     "oxlint": "^1.85.0",
     "tailwindcss": "^4.3.3",
