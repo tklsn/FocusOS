@@ -19,6 +19,30 @@ const loading = computed(
     (status.value === "pending" && !tasks.value),
 );
 
+const resumeNote = ref("");
+watch(
+  () => project.value?.resume_note,
+  (note) => (resumeNote.value = note ?? ""),
+  { immediate: true },
+);
+
+async function patchProject(body: { resume_note?: string }) {
+  try {
+    await $fetch(`/api/projects/${id}`, { method: "PATCH", body });
+    await refreshNuxtData("projects");
+  } catch {
+    resumeNote.value = project.value?.resume_note ?? "";
+    toast.error("Não foi possível salvar. Tente novamente.");
+  }
+}
+
+function saveResumeNote() {
+  const value = resumeNote.value.trim();
+  if (value !== (project.value?.resume_note ?? "")) {
+    patchProject({ resume_note: value });
+  }
+}
+
 async function move(event: MouseEvent, index: number, delta: -1 | 1) {
   const list = [...(tasks.value ?? [])];
   const target = index + delta;
@@ -93,6 +117,27 @@ function deleteTask(taskId: string) {
         </NuxtLink>
       </p>
     </header>
+
+    <section
+      class="flex flex-col gap-2 rounded-lg border border-primary/30 bg-primary/5 p-4"
+    >
+      <label for="resume-note" class="font-heading font-semibold">
+        Onde eu parei
+      </label>
+      <Textarea
+        id="resume-note"
+        v-model="resumeNote"
+        class="bg-background"
+        placeholder="O que você estava fazendo e qual é o próximo passo, para retomar sem esforço."
+        @blur="saveResumeNote"
+      />
+      <p
+        v-if="project.resume_note_updated_at"
+        class="text-xs text-muted-foreground"
+      >
+        Última edição: {{ formatCreatedAt(project.resume_note_updated_at) }}
+      </p>
+    </section>
 
     <TaskFastAddInput :project-id="id" @created="refresh()" />
 

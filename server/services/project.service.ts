@@ -52,11 +52,15 @@ export class ProjectService {
   async updateProject(
     userId: string,
     id: string,
-    data: { name: string },
+    data: Partial<Pick<typeof projects.$inferInsert, "name" | "resume_note">>,
   ): Promise<typeof projects.$inferSelect | undefined> {
     const [row] = await db
       .update(projects)
-      .set(data)
+      .set(
+        data.resume_note === undefined
+          ? data
+          : { ...data, resume_note_updated_at: new Date() },
+      )
       .where(and(eq(projects.id, id), eq(projects.user_id, userId)))
       .returning();
 

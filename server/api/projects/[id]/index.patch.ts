@@ -1,9 +1,16 @@
 import { z } from "zod";
 import { ProjectService } from "~~/server/services/project.service";
 
-const bodySchema = z.object({
-  name: z.string().trim().min(1).max(100),
-});
+const bodySchema = z
+  .object({
+    name: z.string().trim().min(1).max(100),
+    resume_note: z
+      .string()
+      .trim()
+      .transform((value) => value || null),
+  })
+  .partial()
+  .refine((body) => Object.keys(body).length > 0);
 
 export default defineLazyEventHandler(() => {
   const __projectService = new ProjectService();
@@ -15,7 +22,7 @@ export default defineLazyEventHandler(() => {
     if (!parsed.success) {
       throw createError({
         statusCode: 400,
-        message: "Campo 'name' inválido",
+        message: "Campos 'name' ou 'resume_note' inválidos",
       });
     }
 

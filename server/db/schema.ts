@@ -132,6 +132,9 @@ export const projects = sqliteTable(
     name: text().notNull(),
     description: text(),
     status: text({ enum: PROJECT_STATUSES }).notNull().default("active"),
+    // nota "onde eu parei"
+    resume_note: text(),
+    resume_note_updated_at: integer({ mode: "timestamp_ms" }),
     created_at: integer({ mode: "timestamp_ms" })
       .$defaultFn(() => new Date())
       .notNull(),
