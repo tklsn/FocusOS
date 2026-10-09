@@ -15,13 +15,7 @@ export class TaskService {
     return row;
   }
 
-  // Cria no fim da lista do projeto, já como todo.
-  // Devolve undefined quando o projeto não existe ou é de outro usuário.
-  async createProjectTask(
-    userId: string,
-    projectId: string,
-    title: string,
-  ): Promise<Task | undefined> {
+  private nextSortOrder(userId: string, projectId: string): number | undefined {
     const project = db
       .select({ id: projects.id })
       .from(projects)
@@ -35,16 +29,43 @@ export class TaskService {
       .where(eq(tasks.project_id, projectId))
       .get();
 
+    return (last?.value ?? -1) + 1;
+  }
+
+  async createProjectTask(
+    userId: string,
+    projectId: string,
+    title: string,
+  ): Promise<Task | undefined> {
+    const sortOrder = this.nextSortOrder(userId, projectId);
+    if (sortOrder === undefined) return undefined;
+
     return this.createTask({
       user_id: userId,
       project_id: projectId,
       title,
       status: "todo",
-      sort_order: (last?.value ?? -1) + 1,
+      sort_order: sortOrder,
     });
   }
 
-  // Com project_id, na ordem manual do projeto; sem, mais recentes primeiro.
+  async moveToProject(
+    userId: string,
+    id: string,
+    projectId: string,
+  ): Promise<Task | undefined> {
+    const sortOrder = this.nextSortOrder(userId, projectId);
+    if (sortOrder === undefined) return undefined;
+
+    const [row] = await db
+      .update(tasks)
+      .set({ project_id: projectId, status: "todo", sort_order: sortOrder })
+      .where(and(eq(tasks.id, id), eq(tasks.user_id, userId)))
+      .returning();
+
+    return row;
+  }
+
   async findTasksByUserId(
     userId: string,
     filter: { status?: Task["status"]; project_id?: string } = {},

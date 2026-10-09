@@ -3,7 +3,12 @@ import { StickyNote, Trash2 } from "@lucide/vue";
 import { toast } from "vue-sonner";
 
 const props = defineProps<{
-  task: { id: string; title: string; notes: string | null; created_at: string };
+  task: {
+    id: string;
+    title: string;
+    notes: string | null;
+    created_at: string;
+  };
 }>();
 
 const emit = defineEmits<{
@@ -63,6 +68,7 @@ function cancelTitle(e: KeyboardEvent) {
       <span class="shrink-0 text-xs text-muted-foreground">
         {{ formatCreatedAt(task.created_at) }}
       </span>
+      <slot name="actions" />
       <Button
         variant="ghost"
         size="icon-sm"

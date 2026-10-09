@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Inbox } from "@lucide/vue";
+import { toast } from "vue-sonner";
 
 const { data: tasks, status, error, refresh } = useInboxTasks();
 
@@ -15,6 +16,24 @@ function deleteTask(id: string) {
       refresh();
     },
   );
+}
+
+async function moveToProject(
+  taskId: string,
+  project: { id: string; name: string },
+) {
+  tasks.value = tasks.value?.filter((task) => task.id !== taskId);
+  try {
+    await $fetch(`/api/tasks/${taskId}`, {
+      method: "PATCH",
+      body: { project_id: project.id },
+    });
+    toast(`Movida para ${project.name}`);
+    refreshNuxtData(`project-tasks-${project.id}`);
+  } catch {
+    toast.error("Não foi possível mover a tarefa. Tente novamente.");
+  }
+  refresh();
 }
 </script>
 
@@ -46,7 +65,13 @@ function deleteTask(id: string) {
         :task="task"
         @saved="refresh()"
         @delete="deleteTask(task.id)"
-      />
+      >
+        <template #actions>
+          <TaskProjectPicker
+            @select="(project) => moveToProject(task.id, project)"
+          />
+        </template>
+      </TaskItem>
     </ul>
 
     <Empty v-else-if="error">

@@ -8,6 +8,7 @@ const bodySchema = z
       .string()
       .trim()
       .transform((value) => value || null),
+    project_id: z.string().min(1),
   })
   .partial()
   .refine((body) => Object.keys(body).length > 0);
@@ -22,15 +23,22 @@ export default defineLazyEventHandler(() => {
     if (!parsed.success) {
       throw createError({
         statusCode: 400,
-        message: "Campos 'title' ou 'notes' inválidos",
+        message: "Campos 'title', 'notes' ou 'project_id' inválidos",
       });
     }
 
-    const task = await __taskService.updateTask(
-      user.id,
-      getRouterParam(event, "id")!,
-      parsed.data,
-    );
+    const id = getRouterParam(event, "id")!;
+    const { project_id, ...fields } = parsed.data;
+
+    let task;
+    if (project_id) {
+      task = await __taskService.moveToProject(user.id, id, project_id);
+      if (!task) throw createError({ statusCode: 404 });
+    }
+
+    if (Object.keys(fields).length > 0) {
+      task = await __taskService.updateTask(user.id, id, fields);
+    }
     if (!task) throw createError({ statusCode: 404 });
 
     return task;
