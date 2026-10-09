@@ -160,6 +160,37 @@ export class TaskService {
     });
   }
 
+  // Uma tarefa por projeto ativo: a marcada como próxima ação ou, sem marcação,
+  // a primeira não concluída da lista. Marcadas vêm antes.
+  async findNextActions(userId: string): Promise<Task[]> {
+    const rows = await db
+      .select({ task: tasks })
+      .from(tasks)
+      .innerJoin(projects, eq(tasks.project_id, projects.id))
+      .where(
+        and(
+          eq(tasks.user_id, userId),
+          ne(tasks.status, "done"),
+          eq(projects.status, "active"),
+        ),
+      )
+      .orderBy(
+        desc(tasks.is_next_action),
+        asc(projects.created_at),
+        asc(tasks.sort_order),
+        asc(tasks.id),
+      );
+
+    const seen = new Set<string | null>();
+    return rows
+      .map((row) => row.task)
+      .filter((task) => {
+        if (seen.has(task.project_id)) return false;
+        seen.add(task.project_id);
+        return true;
+      });
+  }
+
   // Grava a posição de cada id; ids de outro usuário ou projeto são ignorados.
   async reorderProjectTasks(
     userId: string,
