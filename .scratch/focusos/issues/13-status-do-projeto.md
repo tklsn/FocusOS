@@ -19,3 +19,7 @@
 - Navegação (`app/components/nav/Areas.vue`): sob cada área só aparecem projetos ativos; os demais ficam na seção recolhida "Pausados e concluídos", que só existe quando há algum.
 - Na página da área todos os projetos continuam listados, com a etiqueta "Pausado" ou "Concluído".
 - Teste da API contra o servidor de dev com script descartável; lint, `pnpm fmt:check` e `pnpm build` passam. A UI não foi aberta em navegador: falta a confirmação visual do humano (pausar, concluir, ver a seção recolhida, reativar).
+
+### Aceite 2026-10-09
+
+- O humano confirmou os itens que dependiam da conferência dele (uso da tela no app). Registrado pelo agente a pedido; o agente não repetiu essa conferência.

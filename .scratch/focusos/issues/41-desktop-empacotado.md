@@ -37,3 +37,7 @@
 - Testado por linha de comando com pasta de dados temporária: app empacotado sobe o servidor só em `127.0.0.1:41730`, cria o banco com as 8 migrations e o usuário local, responde 403 em `/api/` sem o segredo e 200 com ele; uma tarefa criada continua lá depois de reiniciar o servidor.
 - Não verificado: a janela do app empacotado em uso (se o renderer recebe o cabeçalho e as telas carregam os dados), a instalação pelo `.dmg` e o uso com a rede desligada. Falta a confirmação do humano. Por não ser assinado, o macOS pede "Abrir" pelo menu de contexto na primeira vez.
 - Limite conhecido: o servidor roda dentro do processo main; um travamento dele derruba o app. Mover para um `utilityProcess` se isso virar problema.
+
+### Aceite 2026-10-09
+
+- O humano confirmou os itens que dependiam da conferência dele (uso da tela no app). Registrado pelo agente a pedido; o agente não repetiu essa conferência.

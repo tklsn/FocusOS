@@ -18,3 +18,7 @@
 - `PATCH /api/projects/:id` aceita `resume_note` (vazio vira `null`) e grava a data da edição no servidor. Renomear ou mudar o status não mexe nessa data.
 - `app/pages/projects/[id].vue`: bloco "Onde eu parei" no topo, destacado com borda e fundo na cor primária, acima da captura. Salva ao sair do campo e mostra "Última edição" (hora, se foi hoje; data, se foi antes).
 - Teste da API contra o servidor de dev com script descartável; lint, `pnpm fmt:check` e `pnpm build` passam. A UI não foi aberta em navegador: falta a confirmação visual do humano (escrever, sair do campo, ver a data, recarregar).
+
+### Aceite 2026-10-09
+
+- O humano confirmou os itens que dependiam da conferência dele (uso da tela no app). Registrado pelo agente a pedido; o agente não repetiu essa conferência.

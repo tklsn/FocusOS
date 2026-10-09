@@ -46,3 +46,11 @@
 - Botões da janela descidos (`trafficLightPosition.y` de 18 para 25) para alinhar com o botão da barra lateral, que fica 8 px abaixo do topo por causa da margem do conteúdo.
 - Em dev o título do menu no macOS continua "Electron": vem do `Info.plist` do Electron.app em `node_modules`. No app empacotado aparece "FocusOS".
 - Não rodado depois destas mudanças, só lint e checagem de sintaxe.
+
+### Follow-up aberto (2026-10-09)
+
+- [ ] Num teste, o `nuxt dev` iniciado pelo `pnpm dev:desktop` continuou rodando depois de o Electron ser encerrado por sinal. O main passou a encerrá-lo em `will-quit` e em `exit`, mas isso não foi confirmado. Reproduzir: abrir `pnpm dev:desktop` sem outro servidor na 3000, fechar com Cmd+Q e depois com Ctrl+C, e conferir com `lsof -ti:3000`.
+
+### Aceite 2026-10-09
+
+- O humano confirmou os itens que dependiam da conferência dele (uso da tela no app). Registrado pelo agente a pedido; o agente não repetiu essa conferência.

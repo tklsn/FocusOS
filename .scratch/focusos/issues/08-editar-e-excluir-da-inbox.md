@@ -4,7 +4,7 @@
 
 **Blocked by:** 06
 
-**Status:** in-review
+**Status:** done
 
 - [x] Edição inline do título e campo de notas
 - [x] Excluir oferece desfazer por alguns segundos em vez de confirmação modal
@@ -24,3 +24,7 @@
 - Excluir com desfazer (`app/pages/inbox/index.vue`): o item some da lista e do contador na hora, e um toast "Tarefa excluída" oferece "Desfazer" por 5 segundos. O `DELETE` só vai ao servidor quando o toast fecha. Limite conhecido, marcado com `ponytail:` no código: fechar o app dentro desses 5 segundos mantém a tarefa.
 - Critério das duas contas: testado em 2026-10-08 com um script descartável que criou um segundo usuário com uma tarefa direto no banco e tentou editar e excluir pela API; resultado 404 e linha intacta. O script também cobriu edição, validação e exclusão da tarefa própria. Foi removido a pedido; vira teste automatizado quando o repo tiver framework de teste.
 - Lint, `pnpm fmt:check` e `pnpm build` passam. A UI não foi aberta em navegador: falta a confirmação visual do humano (editar título e notas, excluir, desfazer, teclado) para fechar o ticket.
+
+### Aceite 2026-10-09
+
+- O humano confirmou os itens que dependiam da conferência dele (uso da tela no app). Registrado pelo agente a pedido; o agente não repetiu essa conferência.

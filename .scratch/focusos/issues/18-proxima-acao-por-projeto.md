@@ -21,3 +21,7 @@
 - Página do projeto: bloco "Próxima ação" acima da captura, com caixa para concluir. Botão de estrela em cada tarefa marca e desmarca.
 - Decisão de produto: sem tarefa marcada, o bloco mostra a primeira da lista como "Sugestão de próxima ação", com o botão "Definir como próxima ação". É assim que o critério "sugere escolher a seguinte, sem obrigar" foi atendido: ao concluir a marcada, a seguinte da lista aparece como sugestão.
 - Teste da API com script descartável (troca de marca, índice único, 404). Falta a confirmação visual do humano.
+
+### Aceite 2026-10-09
+
+- O humano confirmou os itens que dependiam da conferência dele (uso da tela no app). Registrado pelo agente a pedido; o agente não repetiu essa conferência.

@@ -29,3 +29,7 @@
 - O cabeçalho grande "Hoje" virou uma linha discreta com a data; o título da tarefa é o maior texto da página. A captura continua sempre visível, abaixo da ação.
 - Estado vazio ganhou o botão "Triar a Inbox (N)" quando há itens na Inbox.
 - Só componentes shadcn-vue já instalados (`Button`, `Item`, `Collapsible`, `Empty`, `Skeleton`, `Kbd`) e os tokens atuais; nenhuma cor ou fonte nova. Lint, `pnpm fmt:check` e `pnpm build` passam; a tela não foi aberta em navegador.
+
+### Aceite 2026-10-09
+
+- O humano confirmou os itens que dependiam da conferência dele (uso da tela no app). Registrado pelo agente a pedido; o agente não repetiu essa conferência.

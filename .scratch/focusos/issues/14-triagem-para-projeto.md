@@ -21,3 +21,7 @@
 - Depois de mover, o foco do teclado não vai para o item seguinte da lista; volta ao início da página.
 - Sem projetos ativos, o seletor mostra "Nenhum projeto ativo ainda. Crie um dentro de uma área."
 - Teste da API contra o servidor de dev com script descartável; lint, `pnpm fmt:check` e `pnpm build` passam. A UI não foi aberta em navegador: falta a confirmação visual do humano (mover pelo mouse e pelo teclado, busca, tarefa aparecendo no projeto).
+
+### Aceite 2026-10-09
+
+- O humano confirmou os itens que dependiam da conferência dele (uso da tela no app). Registrado pelo agente a pedido; o agente não repetiu essa conferência.

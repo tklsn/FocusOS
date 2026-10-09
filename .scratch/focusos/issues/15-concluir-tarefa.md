@@ -23,3 +23,7 @@
 - Uma tarefa concluída na Inbox (sem projeto) não aparece em nenhuma tela depois que o toast some; só o "Desfazer" a traz de volta.
 - Nenhuma contagem, porcentagem ou marca de atraso foi adicionada.
 - Teste da API com script descartável; lint, `pnpm fmt:check` e `pnpm build` passam. A UI não foi aberta em navegador: falta a confirmação visual do humano.
+
+### Aceite 2026-10-09
+
+- O humano confirmou os itens que dependiam da conferência dele (uso da tela no app). Registrado pelo agente a pedido; o agente não repetiu essa conferência.
