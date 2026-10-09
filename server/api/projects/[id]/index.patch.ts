@@ -1,9 +1,11 @@
 import { z } from "zod";
 import { ProjectService } from "~~/server/services/project.service";
+import { PROJECT_STATUSES } from "~~/server/db/schema";
 
 const bodySchema = z
   .object({
     name: z.string().trim().min(1).max(100),
+    status: z.enum(PROJECT_STATUSES),
     resume_note: z
       .string()
       .trim()
@@ -22,7 +24,7 @@ export default defineLazyEventHandler(() => {
     if (!parsed.success) {
       throw createError({
         statusCode: 400,
-        message: "Campos 'name' ou 'resume_note' inválidos",
+        message: "Campos 'name', 'status' ou 'resume_note' inválidos",
       });
     }
 

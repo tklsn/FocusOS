@@ -52,7 +52,9 @@ export class ProjectService {
   async updateProject(
     userId: string,
     id: string,
-    data: Partial<Pick<typeof projects.$inferInsert, "name" | "resume_note">>,
+    data: Partial<
+      Pick<typeof projects.$inferInsert, "name" | "status" | "resume_note">
+    >,
   ): Promise<typeof projects.$inferSelect | undefined> {
     const [row] = await db
       .update(projects)

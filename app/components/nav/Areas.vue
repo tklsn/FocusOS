@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import { Shapes } from "@lucide/vue";
+import { Archive, ChevronRight, Shapes } from "@lucide/vue";
 
 const { data: areas } = useAreas();
 const { data: projects } = useProjects();
 const route = useRoute();
 
 const projectsByArea = computed(() =>
-  Object.groupBy(projects.value ?? [], (project) => project.area_id),
+  Object.groupBy(
+    (projects.value ?? []).filter((project) => project.status === "active"),
+    (project) => project.area_id,
+  ),
+);
+const inactiveProjects = computed(() =>
+  (projects.value ?? []).filter((project) => project.status !== "active"),
 );
 </script>
 
@@ -44,6 +50,40 @@ const projectsByArea = computed(() =>
           </SidebarMenuSubItem>
         </SidebarMenuSub>
       </SidebarMenuItem>
+      <Collapsible
+        v-if="inactiveProjects.length > 0"
+        as-child
+        class="group/collapsible"
+      >
+        <SidebarMenuItem>
+          <CollapsibleTrigger as-child>
+            <SidebarMenuButton tooltip="Pausados e concluídos">
+              <Archive />
+              <span>Pausados e concluídos</span>
+              <ChevronRight
+                class="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90 motion-reduce:transition-none"
+              />
+            </SidebarMenuButton>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <SidebarMenuSub>
+              <SidebarMenuSubItem
+                v-for="project in inactiveProjects"
+                :key="project.id"
+              >
+                <SidebarMenuSubButton
+                  as-child
+                  :is-active="route.path === `/projects/${project.id}`"
+                >
+                  <NuxtLink :to="`/projects/${project.id}`">
+                    <span>{{ project.name }}</span>
+                  </NuxtLink>
+                </SidebarMenuSubButton>
+              </SidebarMenuSubItem>
+            </SidebarMenuSub>
+          </CollapsibleContent>
+        </SidebarMenuItem>
+      </Collapsible>
       <SidebarMenuItem>
         <SidebarMenuButton
           as-child

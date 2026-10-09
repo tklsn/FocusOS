@@ -26,7 +26,10 @@ watch(
   { immediate: true },
 );
 
-async function patchProject(body: { resume_note?: string }) {
+async function patchProject(body: {
+  status?: keyof typeof PROJECT_STATUS_LABELS;
+  resume_note?: string;
+}) {
   try {
     await $fetch(`/api/projects/${id}`, { method: "PATCH", body });
     await refreshNuxtData("projects");
@@ -102,7 +105,23 @@ function deleteTask(taskId: string) {
 
   <div v-else class="flex flex-col gap-4">
     <header class="font-heading">
-      <h1 class="text-4xl font-bold">{{ project.name }}</h1>
+      <div class="flex items-center justify-between gap-4">
+        <h1 class="text-4xl font-bold">{{ project.name }}</h1>
+        <NativeSelect
+          aria-label="Status do projeto"
+          class="font-sans"
+          :model-value="project.status"
+          @update:model-value="(status) => patchProject({ status })"
+        >
+          <NativeSelectOption
+            v-for="(label, value) in PROJECT_STATUS_LABELS"
+            :key="value"
+            :value="value"
+          >
+            {{ label }}
+          </NativeSelectOption>
+        </NativeSelect>
+      </div>
       <p v-if="area" class="text-xl text-muted-foreground">
         <NuxtLink
           :to="`/areas/${area.id}`"

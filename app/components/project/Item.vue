@@ -2,7 +2,13 @@
 import { ArrowRight, Trash2 } from "@lucide/vue";
 import { toast } from "vue-sonner";
 
-const props = defineProps<{ project: { id: string; name: string } }>();
+const props = defineProps<{
+  project: {
+    id: string;
+    name: string;
+    status: keyof typeof PROJECT_STATUS_LABELS;
+  };
+}>();
 
 defineEmits<{
   (e: "delete"): void;
@@ -52,6 +58,12 @@ function cancelName(e: KeyboardEvent) {
       @keydown.enter="blur"
       @keydown.esc="cancelName"
     />
+    <span
+      v-if="project.status !== 'active'"
+      class="shrink-0 text-xs text-muted-foreground"
+    >
+      {{ PROJECT_STATUS_LABELS[project.status] }}
+    </span>
     <Button variant="ghost" size="icon-sm" as-child>
       <NuxtLink :to="`/projects/${project.id}`">
         <ArrowRight />
