@@ -7,6 +7,7 @@ const props = defineProps<{
     id: string;
     title: string;
     notes: string | null;
+    status: string;
     created_at: string;
   };
 }>();
@@ -57,10 +58,18 @@ function cancelTitle(e: KeyboardEvent) {
   <li class="flex flex-col gap-2 px-2 py-2">
     <div class="flex items-center gap-2">
       <slot name="leading" />
+      <Checkbox
+        aria-label="Concluída"
+        :model-value="task.status === 'done'"
+        @update:model-value="
+          (done) => setTaskDone(task.id, done === true, () => emit('saved'))
+        "
+      />
       <Input
         v-model="title"
         aria-label="Título da tarefa"
         class="border-transparent bg-transparent shadow-none hover:border-input dark:bg-transparent"
+        :class="task.status === 'done' && 'text-muted-foreground line-through'"
         @blur="save('title')"
         @keydown.enter="blur"
         @keydown.esc="cancelTitle"

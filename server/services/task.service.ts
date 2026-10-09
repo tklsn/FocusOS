@@ -1,5 +1,5 @@
 import { projects, tasks } from "../db/schema";
-import { and, asc, desc, eq, inArray, max, ne } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, max, ne, sql } from "drizzle-orm";
 import type { SQLWrapper } from "drizzle-orm";
 
 type Task = typeof tasks.$inferSelect;
@@ -99,6 +99,29 @@ export class TaskService {
     const [row] = await db
       .update(tasks)
       .set(data)
+      .where(and(eq(tasks.id, id), eq(tasks.user_id, userId)))
+      .returning();
+
+    return row;
+  }
+
+  async setDone(
+    userId: string,
+    id: string,
+    done: boolean,
+  ): Promise<Task | undefined> {
+    const [row] = await db
+      .update(tasks)
+      .set(
+        done
+          ? { status: "done", completed_at: new Date(), is_next_action: false }
+          : {
+              status: sql<
+                "inbox" | "todo"
+              >`case when ${tasks.project_id} is null then 'inbox' else 'todo' end`,
+              completed_at: null,
+            },
+      )
       .where(and(eq(tasks.id, id), eq(tasks.user_id, userId)))
       .returning();
 

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ChevronDown, ChevronUp, ListTodo } from "@lucide/vue";
+import { ChevronDown, ChevronRight, ChevronUp, ListTodo } from "@lucide/vue";
 import { toast } from "vue-sonner";
 
 const id = useRoute().params.id as string;
@@ -19,6 +19,14 @@ const loading = computed(
     (status.value === "pending" && !tasks.value),
 );
 
+const openTasks = computed(
+  () => tasks.value?.filter((task) => task.status !== "done") ?? [],
+);
+const doneTasks = computed(() =>
+  (tasks.value ?? [])
+    .filter((task) => task.status === "done")
+    .sort((a, b) => (b.completed_at ?? "").localeCompare(a.completed_at ?? "")),
+);
 const resumeNote = ref("");
 watch(
   () => project.value?.resume_note,
@@ -47,12 +55,12 @@ function saveResumeNote() {
 }
 
 async function move(event: MouseEvent, index: number, delta: -1 | 1) {
-  const list = [...(tasks.value ?? [])];
+  const list = [...openTasks.value];
   const target = index + delta;
   if (target < 0 || target >= list.length) return;
 
   [list[index], list[target]] = [list[target]!, list[index]!];
-  tasks.value = list;
+  tasks.value = [...list, ...doneTasks.value];
 
   // o item muda de lugar no DOM; devolve o foco ao botão para mover de novo pelo teclado
   const button = event.currentTarget as HTMLElement;
@@ -161,11 +169,11 @@ function deleteTask(taskId: string) {
     <TaskFastAddInput :project-id="id" @created="refresh()" />
 
     <ul
-      v-if="tasks && tasks.length > 0"
+      v-if="openTasks.length > 0"
       class="flex flex-col divide-y rounded-lg border bg-card"
     >
       <TaskItem
-        v-for="(task, index) in tasks"
+        v-for="(task, index) in openTasks"
         :key="task.id"
         :task="task"
         @saved="refresh()"
@@ -187,7 +195,7 @@ function deleteTask(taskId: string) {
               variant="ghost"
               size="icon-xs"
               class="text-muted-foreground aria-disabled:opacity-30"
-              :aria-disabled="index === tasks.length - 1"
+              :aria-disabled="index === openTasks.length - 1"
               @click="move($event, index, 1)"
             >
               <ChevronDown />
@@ -208,7 +216,7 @@ function deleteTask(taskId: string) {
       </EmptyContent>
     </Empty>
 
-    <Empty v-else>
+    <Empty v-else-if="doneTasks.length === 0">
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <ListTodo />
@@ -219,5 +227,27 @@ function deleteTask(taskId: string) {
         </EmptyDescription>
       </EmptyHeader>
     </Empty>
+
+    <Collapsible v-if="doneTasks.length > 0" class="group/collapsible">
+      <CollapsibleTrigger as-child>
+        <Button variant="ghost" size="sm" class="text-muted-foreground">
+          <ChevronRight
+            class="transition-transform group-data-[state=open]/collapsible:rotate-90 motion-reduce:transition-none"
+          />
+          Concluídas ({{ doneTasks.length }})
+        </Button>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <ul class="mt-2 flex flex-col divide-y rounded-lg border bg-card">
+          <TaskItem
+            v-for="task in doneTasks"
+            :key="task.id"
+            :task="task"
+            @saved="refresh()"
+            @delete="deleteTask(task.id)"
+          />
+        </ul>
+      </CollapsibleContent>
+    </Collapsible>
   </div>
 </template>

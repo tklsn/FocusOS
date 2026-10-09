@@ -4,7 +4,9 @@ import {
   sqliteTable,
   text,
   unique,
+  uniqueIndex,
 } from "drizzle-orm/sqlite-core";
+import { sql } from "drizzle-orm";
 import { ulid } from "ulid";
 import { AREA_COLORS, AREA_ICONS } from "../../shared/utils/areas";
 
@@ -77,6 +79,8 @@ export const tasks = sqliteTable(
       .notNull()
       .default("inbox"),
     sort_order: integer().notNull().default(0),
+    is_next_action: integer({ mode: "boolean" }).notNull().default(false),
+    completed_at: integer({ mode: "timestamp_ms" }),
     created_at: integer({ mode: "timestamp_ms" })
       .$defaultFn(() => new Date())
       .notNull(),
@@ -88,6 +92,10 @@ export const tasks = sqliteTable(
   (t) => [
     index("idx_tasks_user_id_status").on(t.user_id, t.status),
     index("idx_tasks_project_id").on(t.project_id),
+    // no máximo uma próxima ação por projeto
+    uniqueIndex("idx_tasks_next_action")
+      .on(t.project_id)
+      .where(sql`is_next_action = 1`),
   ],
 );
 
