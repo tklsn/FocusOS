@@ -1,12 +1,24 @@
 # FocusOS
 
-Gerenciador de tarefas feito sob medida para quem tem TDAH e trabalha em muitas frentes ao mesmo tempo: desenvolvimento de software, projetos de pesquisa, mestrado e atividades paralelas.
+![Tela Hoje do FocusOS: uma única próxima ação em destaque, com a nota "onde você parou" do projeto, os botões Iniciar Foco, Concluir e Editar, e o campo de captura rápida](docs/screenshots/home.png)
+
+Gerenciador de tarefas feito sob medida para quem tem TDAH ou dificuldade de manter a atenção e o foco e trabalha em muitas frentes ao mesmo tempo: desenvolvimento de software, projetos de pesquisa e diversas atividades paralelas.
 
 > O FocusOS é uma ferramenta de apoio, não um tratamento. Ele não substitui acompanhamento profissional.
 
+## Para quem é
+
+O ponto de partida do projeto é o TDAH, e é dele que vem a maior parte da pesquisa citada abaixo. Mas as mesmas dificuldades aparecem em outras situações, com ou sem diagnóstico:
+
+- **TDAH e outras condições que afetam a função executiva**, como autismo, ansiedade e depressão.
+- **Fases de pouca reserva:** burnout, sono ruim, luto, doença, um bebê em casa.
+- **Trabalho fragmentado:** muitos projetos em paralelo, interrupções constantes, troca de contexto o dia inteiro.
+
+Em todos esses casos o problema prático é parecido: começar é difícil, o tempo escapa, o contexto se perde a cada interrupção e uma lista longa paralisa em vez de ajudar. O FocusOS trata desse problema prático; não exige diagnóstico e não faz nenhum.
+
 ## A ideia
 
-Ferramentas tradicionais (Todoist, Jira, Notion) pressupõem uma função executiva que o TDAH justamente compromete. Elas falham por três motivos principais:
+Ferramentas tradicionais (Todoist, Jira, Notion) pressupõem atenção, memória de trabalho e planejamento em dia. É justamente o que falta no TDAH, e o que some em qualquer pessoa cansada, ansiosa ou interrompida demais. Elas falham por três motivos principais:
 
 - **Tela em branco e excesso de decisões.** Montar o sistema vira a tarefa, e usá-lo depois é outra. O resultado costuma ser o "cemitério" de tarefas atrasadas que dá vergonha de abrir, ou um sistema elaborado que nunca é usado.
 - **Cegueira temporal.** Listas organizam tarefas, não tempo. Elas não dizem se o dia comporta o que foi planejado.
@@ -168,7 +180,9 @@ As decisões e seus porquês estão em [`docs/adr/`](docs/adr/).
 ```bash
 pnpm install     # instala dependências e gera os tipos do Nuxt
 pnpm dev         # servidor de desenvolvimento em http://localhost:3000
+pnpm dev:desktop # janela desktop (Electron) usando o mesmo servidor de desenvolvimento
 pnpm build       # build de produção
+pnpm build:desktop # instalador macOS em dist/
 pnpm lint        # oxlint
 pnpm fmt         # oxfmt
 ```

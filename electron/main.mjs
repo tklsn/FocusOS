@@ -283,6 +283,12 @@ if (!app.requestSingleInstanceLock()) {
   app.whenReady().then(async () => {
     await (isDev ? startDevServer() : startEmbeddedServer());
 
+    app.setAboutPanelOptions({
+      applicationName: app.name,
+      applicationVersion: app.getVersion(),
+      version: "",
+      credits: "Handcrafted with ❤️ by The Koala Solution 🐨 \n (and tested by robots 🤖)",
+    });
     Menu.setApplicationMenu(buildMenu());
     createWindow();
     app.on("activate", () => {
@@ -298,13 +304,16 @@ if (!app.requestSingleInstanceLock()) {
   // Ctrl+C no terminal ou um kill também passam por aqui, para o nuxt dev não ficar órfão.
   process.on("SIGINT", () => app.quit());
   process.on("SIGTERM", () => app.quit());
-  process.on("exit", () => {
-    if (devServer?.pid) {
-      try {
-        process.kill(-devServer.pid);
-      } catch {
-        // já encerrado
-      }
+  // Nos dois eventos: se o processo for derrubado antes de um deles, o outro ainda encerra o nuxt dev.
+  const stopDevServer = () => {
+    if (!devServer?.pid) return;
+    try {
+      process.kill(-devServer.pid);
+    } catch {
+      // já encerrado
     }
-  });
+    devServer = undefined;
+  };
+  app.on("will-quit", stopDevServer);
+  process.on("exit", stopDevServer);
 }

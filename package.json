@@ -1,5 +1,5 @@
 {
-  "name": "FocusOS",
+  "name": "@tklsn/FocusOS",
   "version": "0.1.0",
   "private": true,
   "description": "Gerenciador de tarefas offline-first",
@@ -57,7 +57,7 @@
     "typescript": "^6.0.3"
   },
   "build": {
-    "appId": "com.focusos.app",
+    "appId": "com.tklsn.focusos.app",
     "productName": "FocusOS",
     "directories": {
       "output": "dist"
