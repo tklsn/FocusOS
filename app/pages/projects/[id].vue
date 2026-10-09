@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import { ChevronDown, ChevronRight, ChevronUp, ListTodo } from "@lucide/vue";
+import {
+  ChevronDown,
+  ChevronRight,
+  ChevronUp,
+  ListTodo,
+  Star,
+} from "@lucide/vue";
 import { toast } from "vue-sonner";
 
 const id = useRoute().params.id as string;
@@ -27,6 +33,24 @@ const doneTasks = computed(() =>
     .filter((task) => task.status === "done")
     .sort((a, b) => (b.completed_at ?? "").localeCompare(a.completed_at ?? "")),
 );
+// Sem tarefa marcada, a primeira da lista vira sugestão (mesma regra da Home).
+const nextAction = computed(
+  () =>
+    openTasks.value.find((task) => task.is_next_action) ?? openTasks.value[0],
+);
+
+async function setNextAction(taskId: string, value: boolean) {
+  try {
+    await $fetch(`/api/tasks/${taskId}`, {
+      method: "PATCH",
+      body: { is_next_action: value },
+    });
+  } catch {
+    toast.error("Não foi possível salvar. Tente novamente.");
+  }
+  refresh();
+}
+
 const resumeNote = ref("");
 watch(
   () => project.value?.resume_note,
@@ -166,6 +190,41 @@ function deleteTask(taskId: string) {
       </p>
     </section>
 
+    <section
+      v-if="nextAction"
+      aria-labelledby="next-action-heading"
+      class="flex items-center gap-3 rounded-lg border bg-card p-4"
+    >
+      <Checkbox
+        aria-label="Concluir próxima ação"
+        :model-value="false"
+        @update:model-value="setTaskDone(nextAction.id, true, refresh)"
+      />
+      <div class="min-w-0 flex-1">
+        <h2
+          id="next-action-heading"
+          class="text-xs font-medium text-muted-foreground"
+        >
+          {{
+            nextAction.is_next_action
+              ? "Próxima ação"
+              : "Sugestão de próxima ação"
+          }}
+        </h2>
+        <p class="truncate font-heading text-lg font-semibold">
+          {{ nextAction.title }}
+        </p>
+      </div>
+      <Button
+        v-if="!nextAction.is_next_action"
+        variant="outline"
+        size="sm"
+        @click="setNextAction(nextAction.id, true)"
+      >
+        Definir como próxima ação
+      </Button>
+    </section>
+
     <TaskFastAddInput :project-id="id" @created="refresh()" />
 
     <ul
@@ -202,6 +261,20 @@ function deleteTask(taskId: string) {
               <span class="sr-only">Mover para baixo</span>
             </Button>
           </div>
+        </template>
+        <template #actions>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            :class="
+              task.is_next_action ? 'text-primary' : 'text-muted-foreground'
+            "
+            :aria-pressed="task.is_next_action"
+            @click="setNextAction(task.id, !task.is_next_action)"
+          >
+            <Star :fill="task.is_next_action ? 'currentColor' : 'none'" />
+            <span class="sr-only">Próxima ação</span>
+          </Button>
         </template>
       </TaskItem>
     </ul>

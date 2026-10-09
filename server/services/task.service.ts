@@ -128,6 +128,38 @@ export class TaskService {
     return row;
   }
 
+  async setNextAction(
+    userId: string,
+    id: string,
+    value: boolean,
+  ): Promise<Task | undefined> {
+    return db.transaction((tx) => {
+      const task = tx
+        .select()
+        .from(tasks)
+        .where(and(eq(tasks.id, id), eq(tasks.user_id, userId)))
+        .get();
+      if (!task?.project_id || task.status === "done") return undefined;
+
+      tx.update(tasks)
+        .set({ is_next_action: false })
+        .where(
+          and(
+            eq(tasks.project_id, task.project_id),
+            eq(tasks.is_next_action, true),
+          ),
+        )
+        .run();
+
+      return tx
+        .update(tasks)
+        .set({ is_next_action: value })
+        .where(eq(tasks.id, id))
+        .returning()
+        .get();
+    });
+  }
+
   // Grava a posição de cada id; ids de outro usuário ou projeto são ignorados.
   async reorderProjectTasks(
     userId: string,
@@ -158,7 +190,7 @@ export class TaskService {
   ): Promise<void> {
     await db
       .update(tasks)
-      .set({ project_id: null, status: "inbox" })
+      .set({ project_id: null, status: "inbox", is_next_action: false })
       .where(
         and(
           eq(tasks.user_id, userId),
