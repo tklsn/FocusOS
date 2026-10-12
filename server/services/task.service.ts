@@ -1,5 +1,5 @@
 import { projects, tasks } from "../db/schema";
-import { and, asc, desc, eq, inArray, max, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, lt, max, ne, sql } from "drizzle-orm";
 import type { SQLWrapper } from "drizzle-orm";
 
 type Task = typeof tasks.$inferSelect;
@@ -238,5 +238,41 @@ export class TaskService {
       .returning({ id: tasks.id });
 
     return rows.length > 0;
+  }
+
+  async setToday(
+    userId: string,
+    id: string,
+    today: boolean,
+  ): Promise<Task | undefined> {
+    const [row] = await db
+      .update(tasks)
+      .set({ scheduled_for: today ? new Date() : null })
+      .where(and(eq(tasks.id, id), eq(tasks.user_id, userId)))
+      .returning();
+
+    return row;
+  }
+
+  // Não concluídas marcadas para hoje ou antes: o que ficou de ontem aparece
+  // hoje, sem regravar a data.
+  async findToday(userId: string, now = new Date()): Promise<Task[]> {
+    const today = startOfLocalDay(now);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const rows = await db
+      .select()
+      .from(tasks)
+      .where(
+        and(
+          eq(tasks.user_id, userId),
+          ne(tasks.status, "done"),
+          lt(tasks.scheduled_for, tomorrow),
+        ),
+      )
+      .orderBy(asc(tasks.scheduled_for), asc(tasks.id));
+
+    return rows;
   }
 }

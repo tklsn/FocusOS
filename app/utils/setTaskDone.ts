@@ -19,4 +19,5 @@ export async function setTaskDone(
     toast.error("Não foi possível salvar. Tente novamente.");
   }
   refresh();
+  refreshNuxtData("today-tasks");
 }

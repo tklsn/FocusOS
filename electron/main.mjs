@@ -104,7 +104,7 @@ function createWindow(path = "/") {
     minHeight: 400,
     ...(process.platform === "darwin" && {
       titleBarStyle: "hiddenInset",
-      trafficLightPosition: { x: 16, y: 25 },
+      trafficLightPosition: { x: 20, y: 25 },
     }),
     webPreferences: {
       contextIsolation: true,
@@ -165,23 +165,23 @@ function buildMenu() {
   return Menu.buildFromTemplate([
     ...(isMac
       ? [
-        {
-          label: app.name,
-          submenu: [
-            { role: "about", label: `Sobre o ${app.name}` },
-            { type: "separator" },
-            settings,
-            { type: "separator" },
-            { role: "services", label: "Serviços" },
-            { type: "separator" },
-            { role: "hide", label: `Ocultar ${app.name}` },
-            { role: "hideOthers", label: "Ocultar Outros" },
-            { role: "unhide", label: "Mostrar Todos" },
-            { type: "separator" },
-            { role: "quit", label: `Encerrar ${app.name}` },
-          ],
-        },
-      ]
+          {
+            label: app.name,
+            submenu: [
+              { role: "about", label: `Sobre o ${app.name}` },
+              { type: "separator" },
+              settings,
+              { type: "separator" },
+              { role: "services", label: "Serviços" },
+              { type: "separator" },
+              { role: "hide", label: `Ocultar ${app.name}` },
+              { role: "hideOthers", label: "Ocultar Outros" },
+              { role: "unhide", label: "Mostrar Todos" },
+              { type: "separator" },
+              { role: "quit", label: `Encerrar ${app.name}` },
+            ],
+          },
+        ]
       : []),
     {
       label: "Arquivo",
@@ -237,11 +237,11 @@ function buildMenu() {
         { role: "reload", label: "Recarregar" },
         ...(isDev
           ? [
-            {
-              role: "toggleDevTools",
-              label: "Ferramentas de Desenvolvimento",
-            },
-          ]
+              {
+                role: "toggleDevTools",
+                label: "Ferramentas de Desenvolvimento",
+              },
+            ]
           : []),
         { type: "separator" },
         { role: "resetZoom", label: "Tamanho Real" },
@@ -259,9 +259,9 @@ function buildMenu() {
         { role: "zoom", label: "Zoom" },
         ...(isMac
           ? [
-            { type: "separator" },
-            { role: "front", label: "Trazer Todas para a Frente" },
-          ]
+              { type: "separator" },
+              { role: "front", label: "Trazer Todas para a Frente" },
+            ]
           : []),
       ],
     },
@@ -287,7 +287,8 @@ if (!app.requestSingleInstanceLock()) {
       applicationName: app.name,
       applicationVersion: app.getVersion(),
       version: "",
-      credits: "Handcrafted with ❤️ by The Koala Solution 🐨 \n (and tested by robots 🤖)",
+      credits:
+        "Handcrafted with ❤️ by The Koala Solution 🐨 \n (and tested by robots 🤖)",
     });
     Menu.setApplicationMenu(buildMenu());
     createWindow();

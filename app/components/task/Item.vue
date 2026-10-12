@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { StickyNote, Trash2 } from "@lucide/vue";
+import { StickyNote, Sun, Trash2 } from "@lucide/vue";
 import { toast } from "vue-sonner";
 
 const props = defineProps<{
@@ -9,6 +9,7 @@ const props = defineProps<{
     notes: string | null;
     status: string;
     created_at: string;
+    scheduled_for: string | null;
   };
 }>();
 
@@ -16,6 +17,12 @@ const emit = defineEmits<{
   (e: "saved"): void;
   (e: "delete"): void;
 }>();
+
+const scheduledToday = computed(
+  () =>
+    !!props.task.scheduled_for &&
+    isTodayOrBefore(new Date(props.task.scheduled_for)),
+);
 
 const title = ref(props.task.title);
 const notes = ref(props.task.notes ?? "");
@@ -77,6 +84,19 @@ function cancelTitle(e: KeyboardEvent) {
       <span class="shrink-0 text-xs text-muted-foreground">
         {{ formatCreatedAt(task.created_at) }}
       </span>
+      <Button
+        v-if="task.status !== 'done'"
+        variant="ghost"
+        size="icon-sm"
+        :class="scheduledToday ? 'text-primary' : 'text-muted-foreground'"
+        :aria-pressed="scheduledToday"
+        @click="setTaskToday(task.id, !scheduledToday, () => emit('saved'))"
+      >
+        <Sun :fill="scheduledToday ? 'currentColor' : 'none'" />
+        <span class="sr-only">
+          {{ scheduledToday ? "Tirar de hoje" : "Fazer hoje" }}
+        </span>
+      </Button>
       <slot name="actions" />
       <Button
         variant="ghost"

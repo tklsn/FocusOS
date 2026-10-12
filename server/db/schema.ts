@@ -81,6 +81,7 @@ export const tasks = sqliteTable(
     sort_order: integer().notNull().default(0),
     is_next_action: integer({ mode: "boolean" }).notNull().default(false),
     completed_at: integer({ mode: "timestamp_ms" }),
+    scheduled_for: integer({ mode: "timestamp_ms" }),
     created_at: integer({ mode: "timestamp_ms" })
       .$defaultFn(() => new Date())
       .notNull(),

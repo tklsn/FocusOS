@@ -11,6 +11,7 @@ const bodySchema = z
     project_id: z.string().min(1),
     done: z.boolean(),
     is_next_action: z.boolean(),
+    today: z.boolean(),
   })
   .partial()
   .refine((body) => Object.keys(body).length > 0);
@@ -26,12 +27,12 @@ export default defineLazyEventHandler(() => {
       throw createError({
         statusCode: 400,
         message:
-          "Campos 'title', 'notes', 'project_id', 'done' ou 'is_next_action' inválidos",
+          "Campos 'title', 'notes', 'project_id', 'done', 'is_next_action' ou 'today' inválidos",
       });
     }
 
     const id = getRouterParam(event, "id")!;
-    const { project_id, done, is_next_action, ...fields } = parsed.data;
+    const { project_id, done, is_next_action, today, ...fields } = parsed.data;
 
     let task;
     if (project_id) {
@@ -44,6 +45,10 @@ export default defineLazyEventHandler(() => {
     }
     if (is_next_action !== undefined) {
       task = await __taskService.setNextAction(user.id, id, is_next_action);
+      if (!task) throw createError({ statusCode: 404 });
+    }
+    if (today !== undefined) {
+      task = await __taskService.setToday(user.id, id, today);
       if (!task) throw createError({ statusCode: 404 });
     }
 
