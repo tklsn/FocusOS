@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Check, ChevronRight, Pencil, Play, Sun } from "@lucide/vue";
+import { Check, Pencil, Play, Sun } from "@lucide/vue";
 import { useNow } from "@vueuse/core";
 
 const now = useNow({ interval: 60_000 });
@@ -225,76 +225,13 @@ const editOpen = ref(false);
       </template>
     </TaskFastAddInput>
 
-    <Collapsible
+    <HomeTaskList
       v-for="list in lists"
       :key="String(list.today)"
-      class="group/collapsible"
-    >
-      <CollapsibleTrigger as-child>
-        <Button variant="ghost" size="sm" class="-ml-2 text-muted-foreground">
-          <ChevronRight
-            class="transition-transform group-data-[state=open]/collapsible:rotate-90 motion-reduce:transition-none"
-          />
-          {{ list.label }}
-        </Button>
-      </CollapsibleTrigger>
-      <CollapsibleContent>
-        <ItemGroup class="mt-2">
-          <Item
-            v-for="{ task, project, area } in list.items"
-            :key="task.id"
-            size="sm"
-            class="px-0"
-          >
-            <ItemMedia v-if="area">
-              <AreaIcon :area="area" class="size-4" />
-            </ItemMedia>
-            <ItemContent class="min-w-0">
-              <ItemTitle class="max-w-full truncate">{{
-                task.title
-              }}</ItemTitle>
-              <ItemDescription v-if="project">
-                <NuxtLink :to="`/projects/${project.id}`">
-                  {{ project.name }}
-                </NuxtLink>
-              </ItemDescription>
-            </ItemContent>
-            <ItemActions>
-              <Button
-                v-if="list.today"
-                variant="ghost"
-                size="sm"
-                @click="focusedId = task.id"
-              >
-                <Play />
-                Focar
-              </Button>
-              <Button
-                variant="ghost"
-                :size="list.today ? 'icon-sm' : 'sm'"
-                :class="list.today && 'text-primary'"
-                @click="setTaskToday(task.id, !list.today)"
-              >
-                <Sun :fill="list.today ? 'currentColor' : 'none'" />
-                <span :class="list.today && 'sr-only'">
-                  {{
-                    list.today ? `Tirar ${task.title} de hoje` : "Fazer hoje"
-                  }}
-                </span>
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                class="text-muted-foreground"
-                @click="setTaskDone(task.id, true)"
-              >
-                <Check />
-                <span class="sr-only">Concluir {{ task.title }}</span>
-              </Button>
-            </ItemActions>
-          </Item>
-        </ItemGroup>
-      </CollapsibleContent>
-    </Collapsible>
+      :label="list.label"
+      :items="list.items"
+      :today="list.today"
+      @focus="focusedId = $event"
+    />
   </div>
 </template>

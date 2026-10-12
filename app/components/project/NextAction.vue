@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 // Bloco do topo da página do projeto. Mostra a próxima ação marcada ou, sem
 // marcação, a primeira tarefa aberta como sugestão (mesma regra da Home).
-const props = defineProps<{
+defineProps<{
   task: {
     id: string;
     title: string;
@@ -9,25 +9,6 @@ const props = defineProps<{
     implementation_intention: string | null;
   };
 }>();
-
-// "Quando e onde vou fazer": só existe para a próxima ação marcada.
-const intention = ref("");
-watch(
-  () => props.task,
-  (task) => (intention.value = task.implementation_intention ?? ""),
-  { immediate: true },
-);
-
-function saveIntention() {
-  const value = intention.value.trim();
-  if (value !== (props.task.implementation_intention ?? "")) {
-    updateTask(props.task.id, { implementation_intention: value });
-  }
-}
-
-function blur(e: KeyboardEvent) {
-  (e.target as HTMLElement).blur();
-}
 </script>
 
 <template>
@@ -50,15 +31,17 @@ function blur(e: KeyboardEvent) {
       <p class="truncate font-heading text-lg font-semibold">
         {{ task.title }}
       </p>
-      <Input
+      <!-- "Quando e onde vou fazer": só existe para a próxima ação marcada. -->
+      <AppInlineInput
         v-if="task.is_next_action"
-        v-model="intention"
+        :value="task.implementation_intention ?? ''"
+        :save="
+          (value) => updateTask(task.id, { implementation_intention: value })
+        "
         aria-label="Quando e onde vou fazer"
         class="mt-2"
         maxlength="200"
         placeholder="Quando e onde? Ex.: depois do almoço, no escritório"
-        @blur="saveIntention"
-        @keydown.enter="blur"
       />
     </div>
     <Button

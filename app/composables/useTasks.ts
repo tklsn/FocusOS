@@ -1,8 +1,5 @@
 // As quatro listas de tarefas da interface. Escrita fica em utils/taskActions.
 
-const hidePendingDeletes = <T extends { id: string }>(tasks: T[]) =>
-  tasks.filter((task) => !pendingTaskDeletes.has(task.id));
-
 export function useInboxTasks() {
   return useFetch("/api/tasks", {
     query: { status: "inbox" },

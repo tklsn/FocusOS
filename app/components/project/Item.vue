@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ArrowRight, Trash2 } from "@lucide/vue";
 
-const props = defineProps<{
+defineProps<{
   project: {
     id: string;
     name: string;
@@ -12,29 +12,6 @@ const props = defineProps<{
 defineEmits<{
   (e: "delete"): void;
 }>();
-
-const name = ref(props.project.name);
-
-async function saveName() {
-  const value = name.value.trim();
-  if (!value || value === props.project.name) {
-    name.value = props.project.name;
-    return;
-  }
-
-  if (!(await updateProject(props.project.id, { name: value }))) {
-    name.value = props.project.name;
-  }
-}
-
-function blur(e: KeyboardEvent) {
-  (e.target as HTMLElement).blur();
-}
-
-function cancelName(e: KeyboardEvent) {
-  name.value = props.project.name;
-  blur(e);
-}
 </script>
 
 <template>
@@ -42,13 +19,12 @@ function cancelName(e: KeyboardEvent) {
     :id="`project-${project.id}`"
     class="flex scroll-mt-4 items-center gap-2 px-2 py-2"
   >
-    <Input
-      v-model="name"
+    <AppInlineInput
+      :value="project.name"
+      :save="(name) => updateProject(project.id, { name })"
+      required
+      ghost
       aria-label="Nome do projeto"
-      class="border-transparent bg-transparent shadow-none hover:border-input dark:bg-transparent"
-      @blur="saveName"
-      @keydown.enter="blur"
-      @keydown.esc="cancelName"
     />
     <span
       v-if="project.status !== 'active'"

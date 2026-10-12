@@ -43,17 +43,7 @@ function deleteArea(id: string, name: string) {
     return;
   }
 
-  pendingAreaDeletes.add(id);
-  areas.value = areas.value?.filter((area) => area.id !== id);
-
-  toastUndo(
-    "Área excluída",
-    () => $fetch(`/api/areas/${id}`, { method: "DELETE" }),
-    () => {
-      pendingAreaDeletes.delete(id);
-      refresh();
-    },
-  );
+  deleteWithUndo(id, `/api/areas/${id}`, "Área excluída");
 }
 
 async function deleteAreaWithProjects() {

@@ -11,8 +11,6 @@ defineEmits<{
   (e: "delete"): void;
 }>();
 
-const name = ref(props.area.name);
-
 async function save(patch: Partial<Omit<Area, "id">>) {
   try {
     await $fetch(`/api/areas/${props.area.id}`, {
@@ -20,28 +18,11 @@ async function save(patch: Partial<Omit<Area, "id">>) {
       body: patch,
     });
     refreshNuxtData("areas");
+    return true;
   } catch {
-    name.value = props.area.name;
     toast.error("Não foi possível salvar. Tente novamente.");
+    return false;
   }
-}
-
-function saveName() {
-  const value = name.value.trim();
-  if (!value) {
-    name.value = props.area.name;
-    return;
-  }
-  if (value !== props.area.name) save({ name: value });
-}
-
-function blur(e: KeyboardEvent) {
-  (e.target as HTMLElement).blur();
-}
-
-function cancelName(e: KeyboardEvent) {
-  name.value = props.area.name;
-  blur(e);
 }
 
 const optionClass =
@@ -102,13 +83,12 @@ const optionClass =
         </fieldset>
       </PopoverContent>
     </Popover>
-    <Input
-      v-model="name"
+    <AppInlineInput
+      :value="area.name"
+      :save="(name) => save({ name })"
+      required
+      ghost
       aria-label="Nome da área"
-      class="border-transparent bg-transparent shadow-none hover:border-input dark:bg-transparent"
-      @blur="saveName"
-      @keydown.enter="blur"
-      @keydown.esc="cancelName"
     />
     <Button
       variant="ghost"

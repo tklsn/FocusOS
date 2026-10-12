@@ -6,12 +6,11 @@ import {
   ListTodo,
   Star,
 } from "@lucide/vue";
-import { toast } from "vue-sonner";
 
 const id = useRoute().params.id as string;
 const { data: areas } = useAreas();
 const { data: projects, status: projectsStatus } = useProjects();
-const { data: tasks, status, error, refresh } = useProjectTasks(id);
+const { data: tasks, status, error } = useProjectTasks(id);
 
 const project = computed(() =>
   projects.value?.find((project) => project.id === id),
@@ -58,7 +57,7 @@ async function saveResumeNote() {
 }
 
 // Reordena na tela primeiro e grava depois; se falhar, volta à ordem do servidor.
-async function move(event: MouseEvent, index: number, delta: -1 | 1) {
+function move(event: MouseEvent, index: number, delta: -1 | 1) {
   const list = [...openTasks.value];
   const target = index + delta;
   if (target < 0 || target >= list.length) return;
@@ -70,15 +69,10 @@ async function move(event: MouseEvent, index: number, delta: -1 | 1) {
   const button = event.currentTarget as HTMLElement;
   nextTick(() => button.focus());
 
-  try {
-    await $fetch(`/api/projects/${id}/tasks/order`, {
-      method: "PUT",
-      body: { ids: list.map((task) => task.id) },
-    });
-  } catch {
-    toast.error("Não foi possível reordenar. Tente novamente.");
-    refresh();
-  }
+  reorderProjectTasks(
+    id,
+    list.map((task) => task.id),
+  );
 }
 </script>
 
@@ -208,7 +202,7 @@ async function move(event: MouseEvent, index: number, delta: -1 | 1) {
       v-else-if="error"
       title="Não foi possível carregar as tarefas."
       description="Suas tarefas continuam salvas."
-      @retry="refresh()"
+      @retry="refreshTasks()"
     />
 
     <Empty v-else-if="doneTasks.length === 0">
