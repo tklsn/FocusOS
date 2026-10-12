@@ -1,11 +1,7 @@
-import { AreaService } from "~~/server/services/area.service";
+import { areaService } from "~~/server/services/area.service";
 
-export default defineLazyEventHandler(() => {
-  const __areaService = new AreaService();
+export default defineEventHandler(async (event) => {
+  const user = await getCurrentUser(event);
 
-  return defineEventHandler(async (event) => {
-    const user = await getCurrentUser(event);
-
-    return __areaService.findAreasByUserId(user.id);
-  });
+  return areaService.findAreasByUserId(user.id);
 });

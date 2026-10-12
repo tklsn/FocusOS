@@ -1,39 +1,22 @@
 import { z } from "zod";
-import { TaskService } from "~~/server/services/task.service";
+import { taskService } from "~~/server/services/task.service";
 
 const bodySchema = z.object({
   title: z.string().trim().min(1),
   project_id: z.string().min(1).optional(),
 });
 
-export default defineLazyEventHandler(() => {
-  const __taskService = new TaskService();
+export default defineEventHandler(async (event) => {
+  const user = await getCurrentUser(event);
+  const { title, project_id } = await readValidatedBody(
+    event,
+    bodySchema.parse,
+  );
 
-  return defineEventHandler(async (event) => {
-    const user = await getCurrentUser(event);
+  const task = await taskService.createTask(user.id, title, project_id);
+  if (!task) {
+    throw createError({ statusCode: 404, message: "Projeto não encontrado" });
+  }
 
-    const parsed = bodySchema.safeParse(await readBody(event));
-    if (!parsed.success) {
-      throw createError({
-        statusCode: 400,
-        message: "Campos 'title' ou 'project_id' inválidos",
-      });
-    }
-
-    const { title, project_id } = parsed.data;
-    if (!project_id) {
-      return __taskService.createTask({ user_id: user.id, title });
-    }
-
-    const task = await __taskService.createProjectTask(
-      user.id,
-      project_id,
-      title,
-    );
-    if (!task) {
-      throw createError({ statusCode: 404, message: "Projeto não encontrado" });
-    }
-
-    return task;
-  });
+  return task;
 });

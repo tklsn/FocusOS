@@ -1,8 +1,7 @@
 import { areas, projects } from "../db/schema";
 import { and, asc, eq } from "drizzle-orm";
-import { TaskService } from "./task.service";
-
-const taskService = new TaskService();
+import { db } from "../utils/db";
+import { taskService } from "./task.service";
 
 type AreaFields = Pick<typeof areas.$inferInsert, "name" | "color" | "icon">;
 
@@ -65,3 +64,5 @@ export class AreaService {
     return rows.length > 0;
   }
 }
+
+export const areaService = new AreaService();

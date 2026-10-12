@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { StickyNote, Sun, Trash2 } from "@lucide/vue";
-import { toast } from "vue-sonner";
 
 const props = defineProps<{
   task: {
@@ -13,51 +12,23 @@ const props = defineProps<{
   };
 }>();
 
-const emit = defineEmits<{
-  (e: "saved"): void;
-  (e: "delete"): void;
-}>();
-
 const scheduledToday = computed(
   () =>
     !!props.task.scheduled_for &&
     isTodayOrBefore(new Date(props.task.scheduled_for)),
 );
 
-const title = ref(props.task.title);
 const notes = ref(props.task.notes ?? "");
 const showNotes = ref(false);
 
-async function save(field: "title" | "notes") {
-  const model = field === "title" ? title : notes;
-  const value = model.value.trim();
-  const saved = props.task[field] ?? "";
-
-  if (field === "title" && !value) {
-    title.value = saved;
-    return;
-  }
+async function saveNotes() {
+  const saved = props.task.notes ?? "";
+  const value = notes.value.trim();
   if (value === saved) return;
 
-  try {
-    await $fetch(`/api/tasks/${props.task.id}`, {
-      method: "PATCH",
-      body: { [field]: value },
-    });
-    emit("saved");
-  } catch {
-    model.value = saved;
-    toast.error("Não foi possível salvar. Tente novamente.");
+  if (!(await updateTask(props.task.id, { notes: value }))) {
+    notes.value = saved;
   }
-}
-
-function blur(e: KeyboardEvent) {
-  (e.target as HTMLElement).blur();
-}
-
-function cancelTitle(e: KeyboardEvent) {
-  title.value = props.task.title;
-  blur(e);
 }
 </script>
 
@@ -68,18 +39,15 @@ function cancelTitle(e: KeyboardEvent) {
       <Checkbox
         aria-label="Concluída"
         :model-value="task.status === 'done'"
-        @update:model-value="
-          (done) => setTaskDone(task.id, done === true, () => emit('saved'))
-        "
+        @update:model-value="(done) => setTaskDone(task.id, done === true)"
       />
-      <Input
-        v-model="title"
+      <AppInlineInput
+        :value="task.title"
+        :save="(title) => updateTask(task.id, { title })"
+        required
+        ghost
         aria-label="Título da tarefa"
-        class="border-transparent bg-transparent shadow-none hover:border-input dark:bg-transparent"
         :class="task.status === 'done' && 'text-muted-foreground line-through'"
-        @blur="save('title')"
-        @keydown.enter="blur"
-        @keydown.esc="cancelTitle"
       />
       <span class="shrink-0 text-xs text-muted-foreground">
         {{ formatCreatedAt(task.created_at) }}
@@ -90,7 +58,7 @@ function cancelTitle(e: KeyboardEvent) {
         size="icon-sm"
         :class="scheduledToday ? 'text-primary' : 'text-muted-foreground'"
         :aria-pressed="scheduledToday"
-        @click="setTaskToday(task.id, !scheduledToday, () => emit('saved'))"
+        @click="setTaskToday(task.id, !scheduledToday)"
       >
         <Sun :fill="scheduledToday ? 'currentColor' : 'none'" />
         <span class="sr-only">
@@ -112,7 +80,7 @@ function cancelTitle(e: KeyboardEvent) {
         variant="ghost"
         size="icon-sm"
         class="text-muted-foreground"
-        @click="$emit('delete')"
+        @click="deleteTask(task.id)"
       >
         <Trash2 />
         <span class="sr-only">Excluir</span>
@@ -123,7 +91,7 @@ function cancelTitle(e: KeyboardEvent) {
       v-model="notes"
       aria-label="Notas da tarefa"
       placeholder="Notas"
-      @blur="save('notes')"
+      @blur="saveNotes"
     />
   </li>
 </template>

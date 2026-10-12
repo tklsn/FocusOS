@@ -6,12 +6,11 @@ import {
   ListTodo,
   Star,
 } from "@lucide/vue";
-import { toast } from "vue-sonner";
 
 const id = useRoute().params.id as string;
 const { data: areas } = useAreas();
 const { data: projects, status: projectsStatus } = useProjects();
-const { data: tasks, status, error, refresh } = useProjectTasks(id);
+const { data: tasks, status, error } = useProjectTasks(id);
 
 const project = computed(() =>
   projects.value?.find((project) => project.id === id),
@@ -39,18 +38,7 @@ const nextAction = computed(
     openTasks.value.find((task) => task.is_next_action) ?? openTasks.value[0],
 );
 
-async function setNextAction(taskId: string, value: boolean) {
-  try {
-    await $fetch(`/api/tasks/${taskId}`, {
-      method: "PATCH",
-      body: { is_next_action: value },
-    });
-  } catch {
-    toast.error("Não foi possível salvar. Tente novamente.");
-  }
-  refresh();
-}
-
+// Nota "onde eu parei": salva ao sair do campo.
 const resumeNote = ref("");
 watch(
   () => project.value?.resume_note,
@@ -58,27 +46,18 @@ watch(
   { immediate: true },
 );
 
-async function patchProject(body: {
-  status?: keyof typeof PROJECT_STATUS_LABELS;
-  resume_note?: string;
-}) {
-  try {
-    await $fetch(`/api/projects/${id}`, { method: "PATCH", body });
-    await refreshNuxtData("projects");
-  } catch {
-    resumeNote.value = project.value?.resume_note ?? "";
-    toast.error("Não foi possível salvar. Tente novamente.");
-  }
-}
-
-function saveResumeNote() {
+async function saveResumeNote() {
+  const saved = project.value?.resume_note ?? "";
   const value = resumeNote.value.trim();
-  if (value !== (project.value?.resume_note ?? "")) {
-    patchProject({ resume_note: value });
+  if (value === saved) return;
+
+  if (!(await updateProject(id, { resume_note: value }))) {
+    resumeNote.value = saved;
   }
 }
 
-async function move(event: MouseEvent, index: number, delta: -1 | 1) {
+// Reordena na tela primeiro e grava depois; se falhar, volta à ordem do servidor.
+function move(event: MouseEvent, index: number, delta: -1 | 1) {
   const list = [...openTasks.value];
   const target = index + delta;
   if (target < 0 || target >= list.length) return;
@@ -90,28 +69,9 @@ async function move(event: MouseEvent, index: number, delta: -1 | 1) {
   const button = event.currentTarget as HTMLElement;
   nextTick(() => button.focus());
 
-  try {
-    await $fetch(`/api/projects/${id}/tasks/order`, {
-      method: "PUT",
-      body: { ids: list.map((task) => task.id) },
-    });
-  } catch {
-    toast.error("Não foi possível reordenar. Tente novamente.");
-    refresh();
-  }
-}
-
-function deleteTask(taskId: string) {
-  pendingTaskDeletes.add(taskId);
-  tasks.value = tasks.value?.filter((task) => task.id !== taskId);
-
-  toastUndo(
-    "Tarefa excluída",
-    () => $fetch(`/api/tasks/${taskId}`, { method: "DELETE" }),
-    () => {
-      pendingTaskDeletes.delete(taskId);
-      refresh();
-    },
+  reorderProjectTasks(
+    id,
+    list.map((task) => task.id),
   );
 }
 </script>
@@ -143,7 +103,7 @@ function deleteTask(taskId: string) {
           aria-label="Status do projeto"
           class="font-sans"
           :model-value="project.status"
-          @update:model-value="(status) => patchProject({ status })"
+          @update:model-value="(status) => updateProject(id, { status })"
         >
           <NativeSelectOption
             v-for="(label, value) in PROJECT_STATUS_LABELS"
@@ -159,11 +119,7 @@ function deleteTask(taskId: string) {
           :to="`/areas/${area.id}`"
           class="inline-flex items-center gap-2 hover:underline"
         >
-          <component
-            :is="AREA_ICON_STYLES[area.icon].component"
-            class="size-5"
-            :class="AREA_COLOR_STYLES[area.color].text"
-          />
+          <AreaIcon :area="area" class="size-5" />
           {{ area.name }}
         </NuxtLink>
       </p>
@@ -190,54 +146,15 @@ function deleteTask(taskId: string) {
       </p>
     </section>
 
-    <section
-      v-if="nextAction"
-      aria-labelledby="next-action-heading"
-      class="flex items-center gap-3 rounded-lg border bg-card p-4"
-    >
-      <Checkbox
-        aria-label="Concluir próxima ação"
-        :model-value="false"
-        @update:model-value="setTaskDone(nextAction.id, true, refresh)"
-      />
-      <div class="min-w-0 flex-1">
-        <h2
-          id="next-action-heading"
-          class="text-xs font-medium text-muted-foreground"
-        >
-          {{
-            nextAction.is_next_action
-              ? "Próxima ação"
-              : "Sugestão de próxima ação"
-          }}
-        </h2>
-        <p class="truncate font-heading text-lg font-semibold">
-          {{ nextAction.title }}
-        </p>
-      </div>
-      <Button
-        v-if="!nextAction.is_next_action"
-        variant="outline"
-        size="sm"
-        @click="setNextAction(nextAction.id, true)"
-      >
-        Definir como próxima ação
-      </Button>
-    </section>
+    <ProjectNextAction v-if="nextAction" :task="nextAction" />
 
-    <TaskFastAddInput :project-id="id" @created="refresh()" />
+    <TaskFastAddInput :project-id="id" />
 
     <ul
       v-if="openTasks.length > 0"
       class="flex flex-col divide-y rounded-lg border bg-card"
     >
-      <TaskItem
-        v-for="(task, index) in openTasks"
-        :key="task.id"
-        :task="task"
-        @saved="refresh()"
-        @delete="deleteTask(task.id)"
-      >
+      <TaskItem v-for="(task, index) in openTasks" :key="task.id" :task="task">
         <template #leading>
           <div class="flex flex-col">
             <Button
@@ -270,7 +187,9 @@ function deleteTask(taskId: string) {
               task.is_next_action ? 'text-primary' : 'text-muted-foreground'
             "
             :aria-pressed="task.is_next_action"
-            @click="setNextAction(task.id, !task.is_next_action)"
+            @click="
+              updateTask(task.id, { is_next_action: !task.is_next_action })
+            "
           >
             <Star :fill="task.is_next_action ? 'currentColor' : 'none'" />
             <span class="sr-only">Próxima ação</span>
@@ -279,15 +198,12 @@ function deleteTask(taskId: string) {
       </TaskItem>
     </ul>
 
-    <Empty v-else-if="error">
-      <EmptyHeader>
-        <EmptyTitle>Não foi possível carregar as tarefas.</EmptyTitle>
-        <EmptyDescription>Suas tarefas continuam salvas.</EmptyDescription>
-      </EmptyHeader>
-      <EmptyContent>
-        <Button variant="outline" @click="refresh()">Tentar de novo</Button>
-      </EmptyContent>
-    </Empty>
+    <AppLoadError
+      v-else-if="error"
+      title="Não foi possível carregar as tarefas."
+      description="Suas tarefas continuam salvas."
+      @retry="refreshTasks()"
+    />
 
     <Empty v-else-if="doneTasks.length === 0">
       <EmptyHeader>
@@ -312,13 +228,7 @@ function deleteTask(taskId: string) {
       </CollapsibleTrigger>
       <CollapsibleContent>
         <ul class="mt-2 flex flex-col divide-y rounded-lg border bg-card">
-          <TaskItem
-            v-for="task in doneTasks"
-            :key="task.id"
-            :task="task"
-            @saved="refresh()"
-            @delete="deleteTask(task.id)"
-          />
+          <TaskItem v-for="task in doneTasks" :key="task.id" :task="task" />
         </ul>
       </CollapsibleContent>
     </Collapsible>

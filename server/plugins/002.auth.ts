@@ -1,10 +1,5 @@
-import { createLocalAccount, loadLocalAccount } from "../utils/local_account";
+import { ensureLocalUser } from "../utils/current-user";
 
-export default defineNitroPlugin(async () => {
-  if (process.env.APP_MODE === "local") {
-    const localAccount = await loadLocalAccount();
-    if (!localAccount) {
-      await createLocalAccount();
-    }
-  }
+export default defineNitroPlugin(() => {
+  if (process.env.APP_MODE === "local") ensureLocalUser();
 });

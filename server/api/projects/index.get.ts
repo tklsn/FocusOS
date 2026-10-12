@@ -1,11 +1,7 @@
-import { ProjectService } from "~~/server/services/project.service";
+import { projectService } from "~~/server/services/project.service";
 
-export default defineLazyEventHandler(() => {
-  const __projectService = new ProjectService();
+export default defineEventHandler(async (event) => {
+  const user = await getCurrentUser(event);
 
-  return defineEventHandler(async (event) => {
-    const user = await getCurrentUser(event);
-
-    return __projectService.findProjectsByUserId(user.id);
-  });
+  return projectService.findProjectsByUserId(user.id);
 });

@@ -1,17 +1,13 @@
-import { TaskService } from "~~/server/services/task.service";
+import { taskService } from "~~/server/services/task.service";
 
-export default defineLazyEventHandler(() => {
-  const __taskService = new TaskService();
+export default defineEventHandler(async (event) => {
+  const user = await getCurrentUser(event);
 
-  return defineEventHandler(async (event) => {
-    const user = await getCurrentUser(event);
+  const deleted = await taskService.deleteTask(
+    user.id,
+    getRouterParam(event, "id")!,
+  );
+  if (!deleted) throw createError({ statusCode: 404 });
 
-    const deleted = await __taskService.deleteTask(
-      user.id,
-      getRouterParam(event, "id")!,
-    );
-    if (!deleted) throw createError({ statusCode: 404 });
-
-    return sendNoContent(event);
-  });
+  return sendNoContent(event);
 });

@@ -43,17 +43,7 @@ function deleteArea(id: string, name: string) {
     return;
   }
 
-  pendingAreaDeletes.add(id);
-  areas.value = areas.value?.filter((area) => area.id !== id);
-
-  toastUndo(
-    "Área excluída",
-    () => $fetch(`/api/areas/${id}`, { method: "DELETE" }),
-    () => {
-      pendingAreaDeletes.delete(id);
-      refresh();
-    },
-  );
+  deleteWithUndo(id, `/api/areas/${id}`, "Área excluída");
 }
 
 async function deleteAreaWithProjects() {
@@ -113,15 +103,12 @@ async function deleteAreaWithProjects() {
       />
     </ul>
 
-    <Empty v-else-if="error">
-      <EmptyHeader>
-        <EmptyTitle>Não foi possível carregar as áreas.</EmptyTitle>
-        <EmptyDescription>Suas áreas continuam salvas.</EmptyDescription>
-      </EmptyHeader>
-      <EmptyContent>
-        <Button variant="outline" @click="refresh()">Tentar de novo</Button>
-      </EmptyContent>
-    </Empty>
+    <AppLoadError
+      v-else-if="error"
+      title="Não foi possível carregar as áreas."
+      description="Suas áreas continuam salvas."
+      @retry="refresh()"
+    />
 
     <Empty v-else>
       <EmptyHeader>

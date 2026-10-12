@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ArrowUpIcon, Loader2Icon } from "@lucide/vue";
 import { z } from "zod";
-import { toast } from "vue-sonner";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 
@@ -29,17 +28,9 @@ const emit = defineEmits<{
 }>();
 
 const addTask = handleSubmit(async (values) => {
-  try {
-    await $fetch("/api/tasks", {
-      method: "POST",
-      body: { title: values.task, project_id: props.projectId },
-    });
-    refreshNuxtData("inbox-tasks");
-    toast.success("Tarefa capturada com sucesso!");
+  if (await createTask(values.task, props.projectId)) {
     resetForm();
     emit("created");
-  } catch {
-    toast.error("Não foi possível criar a tarefa. Tente novamente.");
   }
 });
 
