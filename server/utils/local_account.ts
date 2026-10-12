@@ -1,13 +1,10 @@
 import { and, eq } from "drizzle-orm";
 import { ulid } from "ulid";
 import { accounts, users } from "../db/schema";
-import { AccountService } from "../services/account.service";
-import { UserService } from "../services/user.service";
+import { accountService } from "../services/account.service";
+import { userService } from "../services/user.service";
 
 const LOCAL_EMAIL = "user@local.local";
-
-const __accountService = new AccountService();
-const __userService = new UserService();
 
 export async function createLocalAccount(): Promise<void> {
   const usr: typeof users.$inferInsert = {
@@ -17,7 +14,7 @@ export async function createLocalAccount(): Promise<void> {
     name: "User Local",
   };
 
-  const user = await __userService.createUser(usr);
+  const user = await userService.createUser(usr);
 
   const acc: typeof accounts.$inferInsert = {
     id: ulid(),
@@ -26,7 +23,7 @@ export async function createLocalAccount(): Promise<void> {
     provider_account_id: user.email,
   };
 
-  await __accountService.createAccount(acc);
+  await accountService.createAccount(acc);
 }
 
 export async function loadLocalAccount() {

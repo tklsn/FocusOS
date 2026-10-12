@@ -1,4 +1,5 @@
 import { accounts } from "../db/schema";
+import { db } from "../utils/db";
 
 export class AccountService {
   async createAccount(
@@ -13,3 +14,5 @@ export class AccountService {
     return row;
   }
 }
+
+export const accountService = new AccountService();

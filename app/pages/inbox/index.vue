@@ -4,36 +4,13 @@ import { toast } from "vue-sonner";
 
 const { data: tasks, status, error, refresh } = useInboxTasks();
 
-function deleteTask(id: string) {
-  pendingTaskDeletes.add(id);
-  tasks.value = tasks.value?.filter((task) => task.id !== id);
-
-  toastUndo(
-    "Tarefa excluída",
-    () => $fetch(`/api/tasks/${id}`, { method: "DELETE" }),
-    () => {
-      pendingTaskDeletes.delete(id);
-      refresh();
-    },
-  );
-}
-
 async function moveToProject(
   taskId: string,
   project: { id: string; name: string },
 ) {
-  tasks.value = tasks.value?.filter((task) => task.id !== taskId);
-  try {
-    await $fetch(`/api/tasks/${taskId}`, {
-      method: "PATCH",
-      body: { project_id: project.id },
-    });
+  if (await updateTask(taskId, { project_id: project.id })) {
     toast(`Movida para ${project.name}`);
-    refreshNuxtData(`project-tasks-${project.id}`);
-  } catch {
-    toast.error("Não foi possível mover a tarefa. Tente novamente.");
   }
-  refresh();
 }
 </script>
 
@@ -59,13 +36,7 @@ async function moveToProject(
       v-else-if="tasks && tasks.length > 0"
       class="flex flex-col divide-y rounded-lg border bg-card"
     >
-      <TaskItem
-        v-for="task in tasks"
-        :key="task.id"
-        :task="task"
-        @saved="refresh()"
-        @delete="deleteTask(task.id)"
-      >
+      <TaskItem v-for="task in tasks" :key="task.id" :task="task">
         <template #actions>
           <TaskProjectPicker
             @select="(project) => moveToProject(task.id, project)"
@@ -74,15 +45,12 @@ async function moveToProject(
       </TaskItem>
     </ul>
 
-    <Empty v-else-if="error">
-      <EmptyHeader>
-        <EmptyTitle>Não foi possível carregar a Inbox.</EmptyTitle>
-        <EmptyDescription>Suas tarefas continuam salvas.</EmptyDescription>
-      </EmptyHeader>
-      <EmptyContent>
-        <Button variant="outline" @click="refresh()">Tentar de novo</Button>
-      </EmptyContent>
-    </Empty>
+    <AppLoadError
+      v-else-if="error"
+      title="Não foi possível carregar a Inbox."
+      description="Suas tarefas continuam salvas."
+      @retry="refresh()"
+    />
 
     <Empty v-else>
       <EmptyHeader>

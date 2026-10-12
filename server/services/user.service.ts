@@ -1,4 +1,5 @@
 import { users } from "../db/schema";
+import { db } from "../utils/db";
 
 export class UserService {
   async createUser(
@@ -17,3 +18,5 @@ export class UserService {
     return db.select().from(users).limit(1).get();
   }
 }
+
+export const userService = new UserService();

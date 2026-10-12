@@ -53,10 +53,7 @@ const optionClass =
     <Popover>
       <PopoverTrigger as-child>
         <Button variant="ghost" size="icon-sm">
-          <component
-            :is="AREA_ICON_STYLES[area.icon].component"
-            :class="AREA_COLOR_STYLES[area.color].text"
-          />
+          <AreaIcon :area="area" />
           <span class="sr-only">Mudar cor e ícone</span>
         </Button>
       </PopoverTrigger>

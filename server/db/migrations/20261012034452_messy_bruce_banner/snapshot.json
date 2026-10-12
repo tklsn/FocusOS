@@ -2,9 +2,7 @@
   "version": "7",
   "dialect": "sqlite",
   "id": "fd5cc965-7593-4635-a316-3cefac2ed057",
-  "prevIds": [
-    "47d52d0e-7562-4906-97cf-d82ac075e952"
-  ],
+  "prevIds": ["47d52d0e-7562-4906-97cf-d82ac075e952"],
   "ddl": [
     {
       "name": "accounts",
@@ -457,13 +455,9 @@
       "table": "users"
     },
     {
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["user_id"],
       "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "nameExplicit": false,
@@ -472,13 +466,9 @@
       "table": "accounts"
     },
     {
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["user_id"],
       "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "nameExplicit": false,
@@ -487,13 +477,9 @@
       "table": "areas"
     },
     {
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["user_id"],
       "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "nameExplicit": false,
@@ -502,13 +488,9 @@
       "table": "projects"
     },
     {
-      "columns": [
-        "area_id"
-      ],
+      "columns": ["area_id"],
       "tableTo": "areas",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "nameExplicit": false,
@@ -517,13 +499,9 @@
       "table": "projects"
     },
     {
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["user_id"],
       "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "nameExplicit": false,
@@ -532,13 +510,9 @@
       "table": "tasks"
     },
     {
-      "columns": [
-        "project_id"
-      ],
+      "columns": ["project_id"],
       "tableTo": "projects",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "SET NULL",
       "nameExplicit": false,
@@ -547,45 +521,35 @@
       "table": "tasks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "accounts_pk",
       "table": "accounts",
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "areas_pk",
       "table": "areas",
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "projects_pk",
       "table": "projects",
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "tasks_pk",
       "table": "tasks",
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "users_pk",
       "table": "users",
@@ -694,28 +658,21 @@
       "table": "tasks"
     },
     {
-      "columns": [
-        "provider",
-        "provider_account_id"
-      ],
+      "columns": ["provider", "provider_account_id"],
       "nameExplicit": false,
       "name": "accounts_provider_provider_account_id_unique",
       "entityType": "uniques",
       "table": "accounts"
     },
     {
-      "columns": [
-        "username"
-      ],
+      "columns": ["username"],
       "nameExplicit": false,
       "name": "users_username_unique",
       "entityType": "uniques",
       "table": "users"
     },
     {
-      "columns": [
-        "email"
-      ],
+      "columns": ["email"],
       "nameExplicit": false,
       "name": "users_email_unique",
       "entityType": "uniques",

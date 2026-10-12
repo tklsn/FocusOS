@@ -79,11 +79,7 @@ function deleteProject(id: string) {
   <div v-else class="flex flex-col gap-4">
     <header class="font-heading">
       <h1 class="flex items-center gap-3 text-4xl font-bold">
-        <component
-          :is="AREA_ICON_STYLES[area.icon].component"
-          class="size-8"
-          :class="AREA_COLOR_STYLES[area.color].text"
-        />
+        <AreaIcon :area="area" class="size-8" />
         {{ area.name }}
       </h1>
       <p class="text-xl text-muted-foreground">Projetos desta área.</p>
@@ -110,15 +106,12 @@ function deleteProject(id: string) {
       />
     </ul>
 
-    <Empty v-else-if="error">
-      <EmptyHeader>
-        <EmptyTitle>Não foi possível carregar os projetos.</EmptyTitle>
-        <EmptyDescription>Seus projetos continuam salvos.</EmptyDescription>
-      </EmptyHeader>
-      <EmptyContent>
-        <Button variant="outline" @click="refresh()">Tentar de novo</Button>
-      </EmptyContent>
-    </Empty>
+    <AppLoadError
+      v-else-if="error"
+      title="Não foi possível carregar os projetos."
+      description="Seus projetos continuam salvos."
+      @retry="refresh()"
+    />
 
     <Empty v-else>
       <EmptyHeader>

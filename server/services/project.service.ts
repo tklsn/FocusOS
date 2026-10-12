@@ -1,8 +1,7 @@
 import { areas, projects } from "../db/schema";
 import { and, asc, eq } from "drizzle-orm";
-import { TaskService } from "./task.service";
-
-const taskService = new TaskService();
+import { db } from "../utils/db";
+import { taskService } from "./task.service";
 
 export class ProjectService {
   async findProjectsByUserId(
@@ -80,3 +79,5 @@ export class ProjectService {
     return rows.length > 0;
   }
 }
+
+export const projectService = new ProjectService();

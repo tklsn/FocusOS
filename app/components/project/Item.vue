@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ArrowRight, Trash2 } from "@lucide/vue";
-import { toast } from "vue-sonner";
 
 const props = defineProps<{
   project: {
@@ -23,15 +22,8 @@ async function saveName() {
     return;
   }
 
-  try {
-    await $fetch(`/api/projects/${props.project.id}`, {
-      method: "PATCH",
-      body: { name: value },
-    });
-    refreshNuxtData("projects");
-  } catch {
+  if (!(await updateProject(props.project.id, { name: value }))) {
     name.value = props.project.name;
-    toast.error("Não foi possível salvar. Tente novamente.");
   }
 }
 

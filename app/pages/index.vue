@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { Check, ChevronRight, Pencil, Play, Sun } from "@lucide/vue";
 import { useNow } from "@vueuse/core";
-import { toast } from "vue-sonner";
 
 const now = useNow({ interval: 60_000 });
 const today = computed(() =>
@@ -11,24 +10,39 @@ const today = computed(() =>
     month: "long",
   }),
 );
+// virou o dia com o app aberto: o que era de ontem passa a ser de hoje
+watch(() => now.value.toDateString(), refreshTasks);
 
 const {
   data: todayTasks,
   status: todayStatus,
   error: todayError,
-  refresh: refreshToday,
 } = useTodayTasks();
 const {
-  data: actions,
-  status: suggestionStatus,
-  error: suggestionError,
-  refresh: refreshSuggestions,
+  data: nextActions,
+  status: nextActionsStatus,
+  error: nextActionsError,
 } = useNextActions();
 const { data: projects } = useProjects();
 const { data: areas } = useAreas();
 const { data: inboxTasks } = useInboxTasks();
 
-const decorate = (task: NonNullable<typeof actions.value>[number]) => {
+const pending = computed(
+  () =>
+    (todayStatus.value === "pending" && !todayTasks.value) ||
+    (nextActionsStatus.value === "pending" && !nextActions.value),
+);
+const error = computed(() => todayError.value || nextActionsError.value);
+
+// Tarefa escolhida com "Focar" na lista de hoje.
+const focusedId = ref<string | null>(null);
+const plan = computed(() =>
+  planHome(todayTasks.value ?? [], nextActions.value ?? [], focusedId.value),
+);
+const isSuggestion = computed(() => plan.value.isSuggestion);
+
+// A tela mostra cada tarefa junto do projeto e da área dela.
+const withProject = (task: NonNullable<typeof todayTasks.value>[number]) => {
   const project = projects.value?.find(
     (project) => project.id === task.project_id,
   );
@@ -36,104 +50,31 @@ const decorate = (task: NonNullable<typeof actions.value>[number]) => {
   return { task, project, area };
 };
 
-const todayItems = computed(() => (todayTasks.value ?? []).map(decorate));
-const suggestionItems = computed(() =>
-  (actions.value ?? [])
-    .filter(
-      (task) =>
-        !todayItems.value.some(
-          ({ task: todayTask }) => todayTask.id === task.id,
-        ),
-    )
-    .map(decorate),
-);
-const focusedId = ref<string | null>(null);
 const highlight = computed(
-  () =>
-    todayItems.value.find(({ task }) => task.id === focusedId.value) ??
-    todayItems.value[0] ??
-    suggestionItems.value[0],
-);
-const isSuggestion = computed(() => todayItems.value.length === 0);
-const laterToday = computed(() =>
-  todayItems.value.filter(({ task }) => task.id !== highlight.value?.task.id),
-);
-const moreSuggestions = computed(() =>
-  isSuggestion.value ? suggestionItems.value.slice(1) : suggestionItems.value,
+  () => plan.value.highlight && withProject(plan.value.highlight),
 );
 // Os dois blocos recolhidos: o resto de hoje e as sugestões fora do destaque.
 const lists = computed(() =>
   [
     {
-      label: `Depois, hoje: ${laterToday.value.length}`,
-      items: laterToday.value,
+      label: `Depois, hoje: ${plan.value.laterToday.length}`,
+      items: plan.value.laterToday.map(withProject),
       today: true,
     },
     {
-      label: `Sugestões: ${moreSuggestions.value.length}`,
-      items: moreSuggestions.value,
+      label: `Sugestões: ${plan.value.moreSuggestions.length}`,
+      items: plan.value.moreSuggestions.map(withProject),
       today: false,
     },
   ].filter((list) => list.items.length > 0),
 );
-const pending = computed(
-  () =>
-    (todayStatus.value === "pending" && !todayTasks.value) ||
-    (suggestionStatus.value === "pending" && !actions.value),
-);
-const error = computed(() => todayError.value || suggestionError.value);
-const refreshHome = () => {
-  refreshToday();
-  refreshSuggestions();
-};
-watch(() => now.value.toDateString(), refreshHome);
 
 const focusLink = (taskId: string) => ({
   path: "/focus",
   query: { task: taskId },
 });
 
-// Edição da ação principal: título da tarefa e nota "onde eu parei" do projeto.
 const editOpen = ref(false);
-const editTitle = ref("");
-const editNote = ref("");
-const saving = ref(false);
-
-function openEdit() {
-  editTitle.value = highlight.value?.task.title ?? "";
-  editNote.value = highlight.value?.project?.resume_note ?? "";
-  editOpen.value = true;
-}
-
-async function saveEdit() {
-  const current = highlight.value;
-  const title = editTitle.value.trim();
-  const note = editNote.value.trim();
-  if (!current || !title || saving.value) return;
-
-  saving.value = true;
-  try {
-    if (title !== current.task.title) {
-      await $fetch(`/api/tasks/${current.task.id}`, {
-        method: "PATCH",
-        body: { title },
-      });
-    }
-    if (current.project && note !== (current.project.resume_note ?? "")) {
-      await $fetch(`/api/projects/${current.project.id}`, {
-        method: "PATCH",
-        body: { resume_note: note },
-      });
-    }
-    editOpen.value = false;
-  } catch {
-    toast.error("Não foi possível salvar. Tente novamente.");
-  } finally {
-    saving.value = false;
-    refreshHome();
-    refreshNuxtData("projects");
-  }
-}
 </script>
 
 <template>
@@ -151,15 +92,12 @@ async function saveEdit() {
       <Skeleton class="h-12 w-44" />
     </div>
 
-    <Empty v-else-if="error">
-      <EmptyHeader>
-        <EmptyTitle>Não foi possível carregar a próxima ação.</EmptyTitle>
-        <EmptyDescription>Suas tarefas continuam salvas.</EmptyDescription>
-      </EmptyHeader>
-      <EmptyContent>
-        <Button variant="outline" @click="refreshHome()">Tentar de novo</Button>
-      </EmptyContent>
-    </Empty>
+    <AppLoadError
+      v-else-if="error"
+      title="Não foi possível carregar a próxima ação."
+      description="Suas tarefas continuam salvas."
+      @retry="refreshTasks()"
+    />
 
     <section
       v-else-if="highlight"
@@ -175,12 +113,7 @@ async function saveEdit() {
         :to="`/projects/${highlight.project.id}`"
         class="inline-flex items-center gap-2 self-start rounded-sm text-sm text-muted-foreground outline-none hover:text-foreground hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
       >
-        <component
-          :is="AREA_ICON_STYLES[highlight.area.icon].component"
-          v-if="highlight.area"
-          class="size-4"
-          :class="AREA_COLOR_STYLES[highlight.area.color].text"
-        />
+        <AreaIcon v-if="highlight.area" :area="highlight.area" class="size-4" />
         {{ highlight.project.name }}
       </NuxtLink>
 
@@ -228,7 +161,7 @@ async function saveEdit() {
           variant="outline"
           size="lg"
           class="h-12 text-base"
-          @click="setTaskDone(highlight.task.id, true, refreshHome)"
+          @click="setTaskDone(highlight.task.id, true)"
         >
           <Check />
           Concluir
@@ -237,7 +170,7 @@ async function saveEdit() {
           variant="ghost"
           size="lg"
           class="h-12 text-base text-muted-foreground"
-          @click="openEdit"
+          @click="editOpen = true"
         >
           <Pencil />
           Editar
@@ -246,44 +179,18 @@ async function saveEdit() {
           variant="ghost"
           size="lg"
           class="h-12 text-base text-muted-foreground"
-          @click="setTaskToday(highlight.task.id, isSuggestion, refreshHome)"
+          @click="setTaskToday(highlight.task.id, isSuggestion)"
         >
           <Sun />
           {{ isSuggestion ? "Fazer hoje" : "Tirar de hoje" }}
         </Button>
       </div>
 
-      <Dialog v-model:open="editOpen">
-        <DialogContent>
-          <form class="flex flex-col gap-4" @submit.prevent="saveEdit">
-            <DialogHeader>
-              <DialogTitle>Editar tarefa</DialogTitle>
-              <DialogDescription>
-                A nota vale para o projeto inteiro e também aparece na página
-                dele.
-              </DialogDescription>
-            </DialogHeader>
-            <div class="flex flex-col gap-2">
-              <Label for="edit-title">Tarefa</Label>
-              <Input id="edit-title" v-model="editTitle" required />
-            </div>
-            <div v-if="highlight.project" class="flex flex-col gap-2">
-              <Label for="edit-note">Onde você parou</Label>
-              <Textarea
-                id="edit-note"
-                v-model="editNote"
-                placeholder="O que você estava fazendo e qual é o próximo passo."
-              />
-            </div>
-            <DialogFooter>
-              <Button type="button" variant="outline" @click="editOpen = false">
-                Cancelar
-              </Button>
-              <Button type="submit" :disabled="saving">Salvar</Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+      <TaskEditDialog
+        v-model:open="editOpen"
+        :task="highlight.task"
+        :project="highlight.project"
+      />
     </section>
 
     <Empty v-else>
@@ -340,11 +247,7 @@ async function saveEdit() {
             class="px-0"
           >
             <ItemMedia v-if="area">
-              <component
-                :is="AREA_ICON_STYLES[area.icon].component"
-                class="size-4"
-                :class="AREA_COLOR_STYLES[area.color].text"
-              />
+              <AreaIcon :area="area" class="size-4" />
             </ItemMedia>
             <ItemContent class="min-w-0">
               <ItemTitle class="max-w-full truncate">{{
@@ -370,7 +273,7 @@ async function saveEdit() {
                 variant="ghost"
                 :size="list.today ? 'icon-sm' : 'sm'"
                 :class="list.today && 'text-primary'"
-                @click="setTaskToday(task.id, !list.today, refreshHome)"
+                @click="setTaskToday(task.id, !list.today)"
               >
                 <Sun :fill="list.today ? 'currentColor' : 'none'" />
                 <span :class="list.today && 'sr-only'">
@@ -383,7 +286,7 @@ async function saveEdit() {
                 variant="ghost"
                 size="icon-sm"
                 class="text-muted-foreground"
-                @click="setTaskDone(task.id, true, refreshHome)"
+                @click="setTaskDone(task.id, true)"
               >
                 <Check />
                 <span class="sr-only">Concluir {{ task.title }}</span>

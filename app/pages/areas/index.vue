@@ -113,15 +113,12 @@ async function deleteAreaWithProjects() {
       />
     </ul>
 
-    <Empty v-else-if="error">
-      <EmptyHeader>
-        <EmptyTitle>Não foi possível carregar as áreas.</EmptyTitle>
-        <EmptyDescription>Suas áreas continuam salvas.</EmptyDescription>
-      </EmptyHeader>
-      <EmptyContent>
-        <Button variant="outline" @click="refresh()">Tentar de novo</Button>
-      </EmptyContent>
-    </Empty>
+    <AppLoadError
+      v-else-if="error"
+      title="Não foi possível carregar as áreas."
+      description="Suas áreas continuam salvas."
+      @retry="refresh()"
+    />
 
     <Empty v-else>
       <EmptyHeader>

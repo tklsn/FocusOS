@@ -1,17 +1,13 @@
-import { ProjectService } from "~~/server/services/project.service";
+import { projectService } from "~~/server/services/project.service";
 
-export default defineLazyEventHandler(() => {
-  const __projectService = new ProjectService();
+export default defineEventHandler(async (event) => {
+  const user = await getCurrentUser(event);
 
-  return defineEventHandler(async (event) => {
-    const user = await getCurrentUser(event);
+  const deleted = await projectService.deleteProject(
+    user.id,
+    getRouterParam(event, "id")!,
+  );
+  if (!deleted) throw createError({ statusCode: 404 });
 
-    const deleted = await __projectService.deleteProject(
-      user.id,
-      getRouterParam(event, "id")!,
-    );
-    if (!deleted) throw createError({ statusCode: 404 });
-
-    return sendNoContent(event);
-  });
+  return sendNoContent(event);
 });

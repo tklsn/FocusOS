@@ -23,6 +23,8 @@
 
 O ticket 20 foi fechado com estes itens abertos:
 
-- [ ] Limite de tamanho no servidor para `implementation_intention`: acrescentar `.max(200)` ao schema zod (`server/api/tasks/[id]/index.patch.ts:14`). Hoje o limite só existe no `maxlength` do campo.
-- [ ] `pnpm fmt:check` falha em `server/db/migrations/20261012034452_messy_bruce_banner/snapshot.json`. Rodar `pnpm fmt`.
-- [ ] Na página do projeto, Enter salva e o blur seguinte pode mandar um segundo PATCH igual. O Enter deve só tirar o foco do campo (`app/pages/projects/[id].vue:247`).
+- [x] Limite de tamanho no servidor para `implementation_intention`: acrescentar `.max(200)` ao schema zod (`server/api/tasks/[id]/index.patch.ts:14`). Hoje o limite só existe no `maxlength` do campo.
+- [x] `pnpm fmt:check` falha em `server/db/migrations/20261012034452_messy_bruce_banner/snapshot.json`. Rodar `pnpm fmt`.
+- [x] Na página do projeto, Enter salva e o blur seguinte pode mandar um segundo PATCH igual. O Enter deve só tirar o foco do campo (`app/pages/projects/[id].vue:247`).
+
+Os três itens acima foram resolvidos em 2026-10-12, no refactor de legibilidade feito pelo agente a pedido (ver `sprints/02.md`): `.max(200)` conferido pela API (201 caracteres responde 400), `pnpm fmt:check` passa, e o Enter agora só tira o foco do campo.

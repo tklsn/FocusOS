@@ -27,10 +27,7 @@ const inactiveProjects = computed(() =>
           :is-active="route.path === `/areas/${area.id}`"
         >
           <NuxtLink :to="`/areas/${area.id}`">
-            <component
-              :is="AREA_ICON_STYLES[area.icon].component"
-              :class="AREA_COLOR_STYLES[area.color].text"
-            />
+            <AreaIcon :area="area" />
             <span>{{ area.name }}</span>
           </NuxtLink>
         </SidebarMenuButton>

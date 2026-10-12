@@ -34,7 +34,7 @@ const addTask = handleSubmit(async (values) => {
       method: "POST",
       body: { title: values.task, project_id: props.projectId },
     });
-    refreshNuxtData("inbox-tasks");
+    refreshTasks();
     toast.success("Tarefa capturada com sucesso!");
     resetForm();
     emit("created");

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { StickyNote, Sun, Trash2 } from "@lucide/vue";
-import { toast } from "vue-sonner";
 
 const props = defineProps<{
   task: {
@@ -11,11 +10,6 @@ const props = defineProps<{
     created_at: string;
     scheduled_for: string | null;
   };
-}>();
-
-const emit = defineEmits<{
-  (e: "saved"): void;
-  (e: "delete"): void;
 }>();
 
 const scheduledToday = computed(
@@ -39,15 +33,8 @@ async function save(field: "title" | "notes") {
   }
   if (value === saved) return;
 
-  try {
-    await $fetch(`/api/tasks/${props.task.id}`, {
-      method: "PATCH",
-      body: { [field]: value },
-    });
-    emit("saved");
-  } catch {
+  if (!(await updateTask(props.task.id, { [field]: value }))) {
     model.value = saved;
-    toast.error("Não foi possível salvar. Tente novamente.");
   }
 }
 
@@ -68,9 +55,7 @@ function cancelTitle(e: KeyboardEvent) {
       <Checkbox
         aria-label="Concluída"
         :model-value="task.status === 'done'"
-        @update:model-value="
-          (done) => setTaskDone(task.id, done === true, () => emit('saved'))
-        "
+        @update:model-value="(done) => setTaskDone(task.id, done === true)"
       />
       <Input
         v-model="title"
@@ -90,7 +75,7 @@ function cancelTitle(e: KeyboardEvent) {
         size="icon-sm"
         :class="scheduledToday ? 'text-primary' : 'text-muted-foreground'"
         :aria-pressed="scheduledToday"
-        @click="setTaskToday(task.id, !scheduledToday, () => emit('saved'))"
+        @click="setTaskToday(task.id, !scheduledToday)"
       >
         <Sun :fill="scheduledToday ? 'currentColor' : 'none'" />
         <span class="sr-only">
@@ -112,7 +97,7 @@ function cancelTitle(e: KeyboardEvent) {
         variant="ghost"
         size="icon-sm"
         class="text-muted-foreground"
-        @click="$emit('delete')"
+        @click="deleteTask(task.id)"
       >
         <Trash2 />
         <span class="sr-only">Excluir</span>

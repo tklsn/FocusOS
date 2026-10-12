@@ -1,11 +1,7 @@
-import { TaskService } from "~~/server/services/task.service";
+import { taskService } from "~~/server/services/task.service";
 
-export default defineLazyEventHandler(() => {
-  const __taskService = new TaskService();
+export default defineEventHandler(async (event) => {
+  const user = await getCurrentUser(event);
 
-  return defineEventHandler(async (event) => {
-    const user = await getCurrentUser(event);
-
-    return __taskService.findToday(user.id);
-  });
+  return taskService.findToday(user.id);
 });
