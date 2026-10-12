@@ -51,6 +51,28 @@ async function setNextAction(taskId: string, value: boolean) {
   refresh();
 }
 
+const intention = ref("");
+watch(
+  nextAction,
+  (task) => (intention.value = task?.implementation_intention ?? ""),
+  { immediate: true },
+);
+
+async function saveIntention() {
+  const task = nextAction.value;
+  const value = intention.value.trim();
+  if (!task || value === (task.implementation_intention ?? "")) return;
+  try {
+    await $fetch(`/api/tasks/${task.id}`, {
+      method: "PATCH",
+      body: { implementation_intention: value },
+    });
+  } catch {
+    toast.error("Não foi possível salvar. Tente novamente.");
+  }
+  refresh();
+}
+
 const resumeNote = ref("");
 watch(
   () => project.value?.resume_note,
@@ -214,6 +236,16 @@ function deleteTask(taskId: string) {
         <p class="truncate font-heading text-lg font-semibold">
           {{ nextAction.title }}
         </p>
+        <Input
+          v-if="nextAction.is_next_action"
+          v-model="intention"
+          aria-label="Quando e onde vou fazer"
+          class="mt-2"
+          maxlength="200"
+          placeholder="Quando e onde? Ex.: depois do almoço, no escritório"
+          @blur="saveIntention"
+          @keydown.enter="saveIntention"
+        />
       </div>
       <Button
         v-if="!nextAction.is_next_action"

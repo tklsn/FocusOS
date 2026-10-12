@@ -94,7 +94,10 @@ export class TaskService {
   async updateTask(
     userId: string,
     id: string,
-    data: Pick<Partial<typeof tasks.$inferInsert>, "title" | "notes">,
+    data: Pick<
+      Partial<typeof tasks.$inferInsert>,
+      "title" | "notes" | "implementation_intention"
+    >,
   ): Promise<Task | undefined> {
     const [row] = await db
       .update(tasks)

@@ -11,6 +11,10 @@ const bodySchema = z
     project_id: z.string().min(1),
     done: z.boolean(),
     is_next_action: z.boolean(),
+    implementation_intention: z
+      .string()
+      .trim()
+      .transform((value) => value || null),
     today: z.boolean(),
   })
   .partial()
@@ -27,7 +31,7 @@ export default defineLazyEventHandler(() => {
       throw createError({
         statusCode: 400,
         message:
-          "Campos 'title', 'notes', 'project_id', 'done', 'is_next_action' ou 'today' inválidos",
+          "Campos 'title', 'notes', 'project_id', 'done', 'is_next_action', 'implementation_intention' ou 'today' inválidos",
       });
     }
 

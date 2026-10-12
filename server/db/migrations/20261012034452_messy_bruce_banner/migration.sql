@@ -1,0 +1,1 @@
+ALTER TABLE `tasks` ADD `implementation_intention` text;

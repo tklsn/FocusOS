@@ -191,6 +191,16 @@ async function saveEdit() {
         {{ highlight.task.title }}
       </h2>
 
+      <p
+        v-if="
+          highlight.task.is_next_action &&
+          highlight.task.implementation_intention
+        "
+        class="text-sm text-muted-foreground"
+      >
+        {{ highlight.task.implementation_intention }}
+      </p>
+
       <div v-if="highlight.project?.resume_note" class="flex gap-3">
         <span
           aria-hidden="true"

@@ -73,6 +73,7 @@ export const tasks = sqliteTable(
     project_id: text().references(() => projects.id, { onDelete: "set null" }),
     title: text().notNull(),
     notes: text(),
+    implementation_intention: text(),
     status: text({
       enum: TASK_STATUSES,
     })
