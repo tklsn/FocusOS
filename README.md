@@ -182,10 +182,19 @@ pnpm install     # instala dependências e gera os tipos do Nuxt
 pnpm dev         # servidor de desenvolvimento em http://localhost:3000
 pnpm dev:desktop # janela desktop (Electron) usando o mesmo servidor de desenvolvimento
 pnpm build       # build de produção
-pnpm build:desktop # instalador macOS em dist/
+pnpm build:desktop # instalador do sistema atual em dist/ (macOS, Windows ou Linux)
 pnpm lint        # oxlint
 pnpm fmt         # oxfmt
 ```
+
+### Lançar uma versão
+
+1. Suba o `version` do `package.json` (ex.: `0.2.0`) e faça commit.
+2. `git tag v0.2.0 && git push origin main v0.2.0`.
+
+O workflow `.github/workflows/release.yml` builda macOS, Windows e Linux e publica a release no GitHub quando os três terminam. Windows e Linux se atualizam sozinhos; no macOS, sem assinatura, o app só avisa e abre a página de download (ADR 0006). Uma tag com `-` (ex.: `v0.2.0-beta.1`) sai como pré-release.
+
+Antes de aplicar migrations pendentes, o app copia o banco para `focusos.db.<data>.bak` na mesma pasta (ficam as 3 mais recentes). Para voltar, feche o app e troque o arquivo.
 
 ## Organização do trabalho
 

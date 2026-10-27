@@ -9,7 +9,7 @@ Gerenciador de tarefas sob medida para um profissional com TDAH (engenheiro de s
 - Nuxt 4 SPA (`ssr: false`) + shadcn-vue (port Vue do shadcn/ui, via módulo `shadcn-nuxt`) + Tailwind v4; ícones lucide
 - Backend: rotas de servidor Nitro (`server/api/`)
 - DB: Drizzle ORM com `node:sqlite`, migrations geradas pelo drizzle-kit e aplicadas no boot (SQLite em `.data/` no dev). Ver ADR 0005
-- Desktop: Electron com o servidor Nitro embutido e SQLite em `userData`. Ver ADR 0002
+- Desktop: Electron com o servidor Nitro embutido e SQLite em `userData`. Ver ADR 0002. Releases para macOS, Windows e Linux no GitHub, com auto-update fora do macOS. Ver ADR 0006
 - **v1 é desktop offline-first**, sem login: um usuário local criado automaticamente. A versão web (multiusuário, instância independente, sem sync) vem depois. Ver ADR 0003
 - Auth (só versão web): sessão por cookie via `nuxt-auth-utils` (email + senha, `hashPassword`/`verifyPassword`)
 - MCP: endpoint `/mcp` (streamable HTTP) no mesmo servidor, token Bearer por usuário. Ver ADR 0004
@@ -81,6 +81,6 @@ Opcional e posterior ao MVP: um modelo de linguagem pequeno, rodando na máquina
 
 ## Fora de escopo (Fase 2)
 
-Planejamento/shutdown guiados, calendário/timeboxing por arrastar, integração GitHub/calendário, recorrências, body doubling, relatórios estimado-vs-real, Kanban de sprint, templates de rotina, PWA/mobile, sync entre desktop e web, MCP via stdio, atalho de captura global do sistema operacional, auto-update e assinatura do instalador desktop.
+Planejamento/shutdown guiados, calendário/timeboxing por arrastar, integração GitHub/calendário, recorrências, body doubling, relatórios estimado-vs-real, Kanban de sprint, templates de rotina, PWA/mobile, sync entre desktop e web, MCP via stdio, atalho de captura global do sistema operacional, assinatura do instalador desktop (macOS e Windows) e auto-update no macOS (depende da assinatura; ver ADR 0006).
 
 Critério para avançar de fase: usar o MVP por ~2 semanas capturando e concluindo tarefas de forma consistente.
