@@ -1,6 +1,6 @@
 {
   "name": "@tklsn/FocusOS",
-  "version": "0.1.1-beta.0",
+  "version": "0.1.1-beta.1",
   "private": true,
   "description": "Gerenciador de tarefas offline-first",
   "repository": "github:tklsn/FocusOS",
@@ -21,8 +21,8 @@
     "dev:desktop": "electron . --dev",
     "start:desktop": "nuxt build && electron .",
     "build:desktop": "nuxt build && electron-builder",
-    "release": "changelogen --release --push",
-    "release:beta": "changelogen --release --prerelease beta --push"
+    "release": "changelogen --release --push --no-github",
+    "release:beta": "changelogen --release --prerelease beta --push --no-github"
   },
   "dependencies": {
     "electron-updater": "^6.8.11"
@@ -98,9 +98,10 @@
           ]
         }
       ],
-      "identity": null,
+      "identity": "-",
       "category": "public.app-category.productivity",
-      "artifactName": "${productName}-${version}-${arch}.${ext}"
+      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "hardenedRuntime": false
     },
     "publish": {
       "provider": "github",
