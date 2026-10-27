@@ -1,6 +1,10 @@
 # Changelog
 
 
+## v0.1.1-beta.1
+
+[compare changes](https://github.com/tklsn/FocusOS/compare/v0.1.1-beta.0...v0.1.1-beta.1)
+
 ## v0.1.1-beta.0
 
 
