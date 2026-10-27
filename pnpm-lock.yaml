@@ -8,12 +8,22 @@ importers:
 
   .:
     dependencies:
+      electron-updater:
+        specifier: ^6.8.11
+        version: 6.8.11(supports-color@10.2.2)
+    devDependencies:
       '@fontsource-variable/jetbrains-mono':
         specifier: ^5.3.0
         version: 5.3.0
       '@lucide/vue':
         specifier: ^1.48.0
         version: 1.48.0(vue@3.5.43(typescript@6.0.3))
+      '@tailwindcss/vite':
+        specifier: ^4.3.3
+        version: 4.3.3(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15))
+      '@types/node':
+        specifier: ^26.6.3
+        version: 26.6.3
       '@vee-validate/zod':
         specifier: ^4.15.1
         version: 4.15.1(vue@3.5.43(typescript@6.0.3))(zod@3.25.76)
@@ -29,15 +39,30 @@ importers:
       dotenv:
         specifier: ^18.0.4
         version: 18.0.4
+      drizzle-kit:
+        specifier: 1.0.0-rc.4
+        version: 1.0.0-rc.4
       drizzle-orm:
         specifier: 1.0.0-rc.4
         version: 1.0.0-rc.4(zod@3.25.76)
+      electron:
+        specifier: ^44.7.0
+        version: 44.7.0(supports-color@10.2.2)
+      electron-builder:
+        specifier: ^26.15.3
+        version: 26.15.3(electron-builder-squirrel-windows@26.15.3)(supports-color@10.2.2)
       embla-carousel-vue:
         specifier: ^8.6.0
         version: 8.6.0(vue@3.5.43(typescript@6.0.3))
       nuxt:
         specifier: ^4.5.2
         version: 4.5.2(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7(supports-color@10.2.2)))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7(supports-color@10.2.2)))(@oxc-project/types@0.151.0)(@types/node@26.6.3)(@vue/compiler-sfc@3.5.43)(db0@0.3.4(drizzle-orm@1.0.0-rc.4(zod@3.25.76)))(drizzle-orm@1.0.0-rc.4(zod@3.25.76))(esbuild@0.28.2)(ioredis@5.11.1(supports-color@10.2.2))(lightningcss@1.33.0)(magicast@0.5.5)(oxlint@1.85.0)(rolldown@1.2.11)(rollup-plugin-visualizer@7.1.1(rolldown@1.2.11)(rollup@4.63.5))(rollup@4.63.5)(srvx@0.11.22)(supports-color@10.2.2)(terser@5.51.2)(tsx@4.23.15)(typescript@6.0.3)(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15))
+      oxfmt:
+        specifier: ^0.70.0
+        version: 0.70.0
+      oxlint:
+        specifier: ^1.85.0
+        version: 1.85.0
       reka-ui:
         specifier: ^2.10.5
         version: 2.10.5(vue@3.5.43(typescript@6.0.3))
@@ -47,6 +72,18 @@ importers:
       tailwind-merge:
         specifier: ^3.7.0
         version: 3.7.0
+      tailwindcss:
+        specifier: ^4.3.3
+        version: 4.3.3
+      tsx:
+        specifier: ^4.23.15
+        version: 4.23.15
+      tw-animate-css:
+        specifier: ^1.4.0
+        version: 1.4.0
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
       ulid:
         specifier: ^3.0.2
         version: 3.0.2
@@ -68,40 +105,6 @@ importers:
       zod:
         specifier: 3.25.76
         version: 3.25.76
-    devDependencies:
-      '@tailwindcss/vite':
-        specifier: ^4.3.3
-        version: 4.3.3(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15))
-      '@types/node':
-        specifier: ^26.6.3
-        version: 26.6.3
-      drizzle-kit:
-        specifier: 1.0.0-rc.4
-        version: 1.0.0-rc.4
-      electron:
-        specifier: ^44.7.0
-        version: 44.7.0(supports-color@10.2.2)
-      electron-builder:
-        specifier: ^26.15.3
-        version: 26.15.3(electron-builder-squirrel-windows@26.15.3)(supports-color@10.2.2)
-      oxfmt:
-        specifier: ^0.70.0
-        version: 0.70.0
-      oxlint:
-        specifier: ^1.85.0
-        version: 1.85.0
-      tailwindcss:
-        specifier: ^4.3.3
-        version: 4.3.3
-      tsx:
-        specifier: ^4.23.15
-        version: 4.23.15
-      tw-animate-css:
-        specifier: ^1.4.0
-        version: 1.4.0
-      typescript:
-        specifier: ^6.0.3
-        version: 6.0.3
 
 packages:
 
@@ -2660,6 +2663,9 @@ packages:
   electron-to-chromium@1.5.439:
     resolution: {integrity: sha512-qu6QIPXhsb+CRcAiTMNjR4A1y/7tCYKkKjr5CZXRVih6qkDf79peZ2BpEU3qoDBNCRrcy3Mra3X9nG5oruuA7Q==}
 
+  electron-updater@6.8.11:
+    resolution: {integrity: sha512-12U/mbzaIKQS3Q543aQ7DjyAZMXeVJy1Wpu0qdq5ne4RXpIQDpWYm25zRjgXngAoo6swMrm4C4owGyiIipelsg==}
+
   electron-winstaller@5.4.0:
     resolution: {integrity: sha512-bO3y10YikuUwUuDUQRM4KfwNkKhnpVO7IPdbsrejwN9/AABJzzTQ4GeHwyzNSrVO+tEH3/Np255a3sVZpZDjvg==}
     engines: {node: '>=8.0.0'}
@@ -3422,6 +3428,13 @@ packages:
   local-pkg@1.2.1:
     resolution: {integrity: sha512-++gUqRDEvcnN6Zhqrr+y/CkVEHhlrR96vZn3nZZPYzMcBUyBtTKzB9NadClFIsIVSsu+3i9tfk/erqy9kAmt7Q==}
     engines: {node: '>=14'}
+
+  lodash.escaperegexp@4.1.2:
+    resolution: {integrity: sha512-TM9YBvyC84ZxE3rgfefxUWiQKLilstD6k7PTGt6wfbtXF8ixIJLOL3VYyV/z+ZiPLsVxAsKAFVwWlWeb2Y8Yyw==}
+
+  lodash.isequal@4.5.0:
+    resolution: {integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==}
+    deprecated: This package is deprecated. Use require('node:util').isDeepStrictEqual instead.
 
   lodash@4.18.1:
     resolution: {integrity: sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==}
@@ -4471,6 +4484,9 @@ packages:
 
   tiny-invariant@1.3.3:
     resolution: {integrity: sha512-+FbBPE1o9QAYvviau/qC5SE3caw21q3xkvWKBtja5vgqOWIHHJ3ioaq1VPfn/Szqctz2bU/oYeKd9/z5BL+PVg==}
+
+  tiny-typed-emitter@2.1.0:
+    resolution: {integrity: sha512-qVtvMxeXbVej0cQWKqVSSAHmKZEHAvxdF8HEUBFWts8h+xEo5m/lEiPakuyZ3BnCBjOD8i24kzNOiOLLgsSxhA==}
 
   tinyclip@0.1.15:
     resolution: {integrity: sha512-uo33abH+Ays0xYaDysoBt494Hb3hsEczMpcC0MwFl773pazORx4fmvKhclhR1wonUbB6vvpRsvVMwnhfqeMc+A==}
@@ -7539,6 +7555,19 @@ snapshots:
 
   electron-to-chromium@1.5.439: {}
 
+  electron-updater@6.8.11(supports-color@10.2.2):
+    dependencies:
+      builder-util-runtime: 9.7.0(supports-color@10.2.2)
+      fs-extra: 10.1.0
+      js-yaml: 4.3.2
+      lazy-val: 1.0.5
+      lodash.escaperegexp: 4.1.2
+      lodash.isequal: 4.5.0
+      semver: 7.7.4
+      tiny-typed-emitter: 2.1.0
+    transitivePeerDependencies:
+      - supports-color
+
   electron-winstaller@5.4.0(supports-color@10.2.2):
     dependencies:
       '@electron/asar': 3.4.1
@@ -8329,6 +8358,10 @@ snapshots:
       mlly: 1.8.2
       pkg-types: 2.3.3
       quansync: 0.2.11
+
+  lodash.escaperegexp@4.1.2: {}
+
+  lodash.isequal@4.5.0: {}
 
   lodash@4.18.1: {}
 
@@ -9645,6 +9678,8 @@ snapshots:
       semver: 5.7.2
 
   tiny-invariant@1.3.3: {}
+
+  tiny-typed-emitter@2.1.0: {}
 
   tinyclip@0.1.15: {}
 

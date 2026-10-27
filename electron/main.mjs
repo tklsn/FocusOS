@@ -1,4 +1,5 @@
-import { app, BrowserWindow, Menu, session, shell } from "electron";
+import { app, BrowserWindow, dialog, Menu, session, shell } from "electron";
+import electronUpdater from "electron-updater";
 import { spawn } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import { createServer } from "node:net";
@@ -13,6 +14,12 @@ const DEV_ORIGIN = "http://localhost:3000";
 const SECRET_HEADER = "x-focusos-secret";
 
 const secret = randomBytes(32).toString("hex");
+
+// Sem assinatura o macOS não aceita update automático: lá só avisamos e abrimos a release (ADR 0006).
+const { autoUpdater } = electronUpdater;
+const RELEASES_URL = "https://github.com/tklsn/FocusOS/releases/tag/v";
+const UPDATE_INTERVAL = 4 * 60 * 60 * 1000;
+let update;
 
 let origin;
 let devServer;
@@ -154,8 +161,85 @@ function capture() {
   window.webContents.sendInputEvent({ type: "keyUp", keyCode: "I", modifiers });
 }
 
+function startUpdater() {
+  if (!app.isPackaged) return;
+  autoUpdater.autoDownload = process.platform !== "darwin";
+  autoUpdater.on("update-available", ({ version }) => {
+    update = { version, downloaded: false };
+    Menu.setApplicationMenu(buildMenu());
+  });
+  autoUpdater.on("update-downloaded", ({ version }) => {
+    update = { version, downloaded: true };
+    Menu.setApplicationMenu(buildMenu());
+  });
+  // Sem internet a verificação automática falha em silêncio.
+  autoUpdater.on("error", (error) =>
+    console.error("auto-update:", error.message),
+  );
+  const check = () => autoUpdater.checkForUpdates().catch(() => {});
+  check();
+  setInterval(check, UPDATE_INTERVAL);
+}
+
+async function checkForUpdatesNow() {
+  const isMac = process.platform === "darwin";
+  let result;
+  try {
+    result = await autoUpdater.checkForUpdates();
+  } catch {
+    dialog.showMessageBox({ message: "Não foi possível verificar agora." });
+    return;
+  }
+  if (!result?.isUpdateAvailable) {
+    dialog.showMessageBox({
+      message: `Você está na versão mais recente (${app.getVersion()}).`,
+    });
+    return;
+  }
+  const { version } = result.updateInfo;
+  if (isMac) {
+    const { response } = await dialog.showMessageBox({
+      message: `A versão ${version} está disponível.`,
+      buttons: ["Abrir página de download", "Fechar"],
+    });
+    if (response === 0) shell.openExternal(RELEASES_URL + version);
+  } else if (update?.downloaded) {
+    const { response } = await dialog.showMessageBox({
+      message: `A versão ${version} está pronta.`,
+      detail: "Ela será instalada ao sair do app.",
+      buttons: ["Reiniciar agora", "Depois"],
+    });
+    if (response === 0) autoUpdater.quitAndInstall();
+  } else {
+    dialog.showMessageBox({
+      message: `Baixando a versão ${version}.`,
+      detail: "Ela será instalada ao sair do app.",
+    });
+  }
+}
+
+function updateMenuItems() {
+  if (!app.isPackaged) return [];
+  const items = [
+    { label: "Verificar atualizações…", click: checkForUpdatesNow },
+  ];
+  if (update && process.platform === "darwin") {
+    items.push({
+      label: `Baixar ${app.name} ${update.version}…`,
+      click: () => shell.openExternal(RELEASES_URL + update.version),
+    });
+  } else if (update?.downloaded) {
+    items.push({
+      label: `Reiniciar para atualizar (v${update.version})`,
+      click: () => autoUpdater.quitAndInstall(),
+    });
+  }
+  return items;
+}
+
 function buildMenu() {
   const isMac = process.platform === "darwin";
+  const updates = updateMenuItems();
   const settings = {
     label: "Configurações…",
     accelerator: "CmdOrCtrl+,",
@@ -169,6 +253,7 @@ function buildMenu() {
             label: app.name,
             submenu: [
               { role: "about", label: `Sobre o ${app.name}` },
+              ...updates,
               { type: "separator" },
               settings,
               { type: "separator" },
@@ -265,6 +350,9 @@ function buildMenu() {
           : []),
       ],
     },
+    ...(!isMac && updates.length
+      ? [{ label: "Ajuda", role: "help", submenu: updates }]
+      : []),
   ]);
 }
 
@@ -292,6 +380,7 @@ if (!app.requestSingleInstanceLock()) {
     });
     Menu.setApplicationMenu(buildMenu());
     createWindow();
+    startUpdater();
     app.on("activate", () => {
       if (BrowserWindow.getAllWindows().length === 0) createWindow();
     });
