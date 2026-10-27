@@ -31,19 +31,19 @@ O FocusOS é opinativo por escolha: em vez de um canvas configurável, oferece t
 **Remover fricção, externalizar tempo e memória, mostrar UMA próxima ação por vez e nunca punir atrasos.**
 
 1. **Captura sem fricção.** No máximo dois toques ou um atalho. Nunca exigir projeto ou data na hora de capturar; a triagem vem depois.
-2. **Uma coisa por vez.** A tela do dia mostra só "Hoje" e a próxima ação. O Modo Foco mostra uma única tarefa em tela cheia.
-3. **Tempo visível.** Estimativas por tarefa, timer em anel que encolhe e aviso gentil quando o plano do dia passa da capacidade.
+2. **Uma coisa por vez.** A tela do dia mostra só "Hoje" e a próxima ação. O Modo Foco mostra uma única tarefa em tela cheia (🚧 Modo Foco).
+3. **Tempo visível.** 🚧 Estimativas por tarefa, timer em anel que encolhe e aviso gentil quando o plano do dia passa da capacidade.
 4. **Nunca punir.** Tarefas não concluídas passam para hoje sem vermelho, sem contador de "atrasadas" e sem culpa.
-5. **Recompensa imediata e assimétrica.** Uma pequena celebração ao concluir, opcional e desligável. A falha é neutra.
+5. **Recompensa imediata e assimétrica.** 🚧 Uma pequena celebração ao concluir, opcional e desligável. A falha é neutra.
 6. **Pouca carga visual.** Cores suaves, espaço em branco, estados vazios acolhedores, acessibilidade (contraste AA, teclado, `prefers-reduced-motion`).
 7. **Retomar contexto sem esforço.** Cada projeto guarda uma nota "onde eu parei" e uma próxima ação.
-8. **Energia, não só prioridade.** Tarefas marcadas por nível de energia e contexto; o "Modo Zumbi" mostra só o que cabe num dia ruim.
+8. **Energia, não só prioridade.** 🚧 Tarefas marcadas por nível de energia e contexto; o "Modo Zumbi" mostra só o que cabe num dia ruim.
 9. **Intenções de implementação.** Um campo opcional "quando/onde vou fazer" transforma a próxima ação num plano se-então.
-10. **Decomposição por IA.** Uma tarefa vaga vira de 3 a 8 micro-passos concretos e iniciáveis, salvos como subtarefas.
+10. **Decomposição por IA.** 🚧 Uma tarefa vaga vira de 3 a 8 micro-passos concretos e iniciáveis, salvos como subtarefas.
 
 ## Como funciona
 
-> Descreve o MVP planejado; o app está em construção (ver [tickets](.scratch/focusos/issues/)).
+> Descreve o MVP planejado. O app está em construção: o que está marcado com 🚧 ainda não existe; o resto já funciona no app desktop (ver [tickets](.scratch/focusos/issues/)).
 
 ### O fluxo de uma tarefa
 
@@ -54,30 +54,30 @@ O FocusOS é opinativo por escolha: em vez de um canvas configurável, oferece t
 
 1. **Capturar.** Um campo sempre visível na Home e um atalho global de teclado. Digita, aperta Enter, pronto. Nada de escolher projeto, data ou prioridade agora: o objetivo é tirar a ideia da cabeça em segundos.
 2. **Inbox.** Tudo o que foi capturado e ainda não foi organizado. Vazia, ela diz "Tudo capturado. Respire."
-3. **Triagem.** Quando houver energia para isso, cada item recebe em poucos toques um projeto e, se quiser, nível de energia (baixa, média, alta) e contexto (código, escrita, leitura, admin, reunião, rua).
+3. **Triagem.** Quando houver energia para isso, cada item recebe em poucos toques um projeto e, se quiser, nível de energia (baixa, média, alta) e contexto (código, escrita, leitura, admin, reunião, rua) (🚧 energia e contexto).
 4. **Projeto.** Cada projeto mora numa área da vida (ex.: Trabalho, Pesquisa, Mestrado, Pessoal) e guarda:
    - uma nota **"onde eu parei"**, em destaque no topo, para retomar o contexto sem reconstruir tudo de memória;
-   - suas tarefas e subtarefas (um nível só).
+   - suas tarefas e subtarefas (um nível só) (🚧 subtarefas).
 5. **Próxima ação.** Cada projeto destaca **exatamente uma** tarefa como a próxima coisa a fazer, com um campo opcional "quando/onde vou fazer" (ex.: "depois do almoço, no escritório").
 6. **Hoje.** A tela principal mostra só:
    - as próximas ações dos projetos ativos, com um botão grande "Iniciar Foco" na primeira;
    - as tarefas agendadas para hoje;
-   - um aviso gentil se a soma das estimativas passar da capacidade do dia.
-7. **Modo Foco.** Tela cheia com uma única tarefa, seus micro-passos em checklist e um timer em anel que encolhe (Pomodoro configurável). Três saídas: Concluir, Pausar ou "Adiar sem culpa".
-8. **Concluída.** Uma pequena celebração (confete, som opcional), desligável. Nenhum placar de falhas.
+   - um aviso gentil se a soma das estimativas passar da capacidade do dia. 🚧
+7. **Modo Foco.** 🚧 Tela cheia com uma única tarefa, seus micro-passos em checklist e um timer em anel que encolhe (Pomodoro configurável). Três saídas: Concluir, Pausar ou "Adiar sem culpa".
+8. **Concluída.** Uma pequena celebração (confete, som opcional), desligável (🚧 celebração). Nenhum placar de falhas.
 
 ### O dia a dia
 
 - **Rollover sem culpa.** Uma tarefa agendada para ontem e não feita simplesmente aparece hoje. Sem vermelho, sem contador de atrasadas.
-- **Capacidade.** Cada tarefa pode ter uma estimativa em minutos. A capacidade do dia vem do tempo até o seu horário de encerramento (_shutdown_) e pode ser ajustada. Passou do limite, a Home avisa: "Você planejou 6h30 para uma janela de 5h. Tirar algo?"
-- **Modo Zumbi.** Em dias ruins, um filtro mostra só tarefas de energia baixa. Sem nenhuma, a sugestão é capturar algo pequeno ou descansar.
-- **Sessões de foco.** Cada sessão registra o tempo planejado e o real, e soma na tarefa.
+- **Capacidade.** 🚧 Cada tarefa pode ter uma estimativa em minutos. A capacidade do dia vem do tempo até o seu horário de encerramento (_shutdown_) e pode ser ajustada. Passou do limite, a Home avisa: "Você planejou 6h30 para uma janela de 5h. Tirar algo?"
+- **Modo Zumbi.** 🚧 Em dias ruins, um filtro mostra só tarefas de energia baixa. Sem nenhuma, a sugestão é capturar algo pequeno ou descansar.
+- **Sessões de foco.** 🚧 Cada sessão registra o tempo planejado e o real, e soma na tarefa.
 
-### Decomposição por IA
+### Decomposição por IA 🚧
 
 Uma tarefa vaga ("escrever capítulo 2") vira de 3 a 8 micro-passos concretos e iniciáveis, cada um com minutos estimados. Um slider controla a granularidade, de poucos passos grandes a muitos passos pequenos. Os passos aparecem numa prévia editável e, ao salvar, viram subtarefas que o Modo Foco mostra um de cada vez. A chamada ao LLM acontece só no servidor.
 
-### Agentes via MCP
+### Agentes via MCP 🚧
 
 O FocusOS expõe um servidor [MCP](https://modelcontextprotocol.io/) para que agentes como o Claude Code trabalhem junto com você. Exemplo: ao fim de uma sessão de código, o agente atualiza a nota "onde eu parei" do projeto e captura na Inbox o que ficou pendente.
 
@@ -166,10 +166,10 @@ As referências abaixo calibram as decisões de produto; não são exibidas no a
 ```
 
 - **Interface:** Nuxt 4 em modo SPA, com [shadcn-vue](https://www.shadcn-vue.com/), Tailwind v4 e ícones lucide.
-- **Servidor:** Nitro, o mesmo código do Nuxt. As rotas `/api/*` atendem a interface e o `/mcp` atende os agentes. As duas chamam as mesmas funções de regra de negócio.
+- **Servidor:** Nitro, o mesmo código do Nuxt. As rotas `/api/*` atendem a interface e o `/mcp` (🚧) atende os agentes. As duas chamam as mesmas funções de regra de negócio.
 - **Banco:** [Drizzle ORM](https://orm.drizzle.team/) com `node:sqlite`. As migrations são geradas pelo `drizzle-kit` e aplicadas no boot. No desktop o SQLite fica na pasta de dados do usuário.
 - **Desktop (v1):** Electron sobe o servidor Nitro embutido em `127.0.0.1` e abre a janela nele. Funciona offline e não tem login: um usuário local é criado no primeiro uso.
-- **Segurança local:** sem login, a API confere `Host` e `Origin` e exige um segredo gerado a cada abertura, entregue só à janela do app. Assim, sites abertos no navegador não conseguem chamar o servidor local. O `/mcp` exige token Bearer, guardado só como hash.
+- **Segurança local:** sem login, a API confere `Host` e `Origin` e exige um segredo gerado a cada abertura, entregue só à janela do app. Assim, sites abertos no navegador não conseguem chamar o servidor local. O `/mcp` (🚧) exige token Bearer, guardado só como hash.
 - **Isolamento por usuário:** toda rota e toda tool obtém o usuário do servidor (usuário local, sessão ou token), nunca de um dado enviado pelo cliente.
 - **Versão web (depois do MVP):** o mesmo código como site multiusuário, com cadastro e login. É uma instância independente, sem sync com o desktop.
 
