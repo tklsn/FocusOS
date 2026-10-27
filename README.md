@@ -189,8 +189,16 @@ pnpm fmt         # oxfmt
 
 ### Lançar uma versão
 
-1. Suba o `version` do `package.json` (ex.: `0.2.0`) e faça commit.
-2. `git tag v0.2.0 && git push origin main v0.2.0`.
+Na `main`, com a árvore limpa:
+
+```bash
+pnpm release       # versão estável
+pnpm release:beta  # pré-release (ex.: 0.1.1-beta.0)
+```
+
+O [changelogen](https://github.com/unjs/changelogen) lê os Conventional Commits desde a última tag, sobe o `version`, escreve o `CHANGELOG.md`, faz o commit `chore(release): vX.Y.Z`, cria a tag e dá push. Só `feat`, `fix`, `perf`, `refactor` e `build` entram no changelog (configurado no campo `changelog` do `package.json`). Enquanto a versão for `0.x`, `feat` sobe o patch e uma quebra (`!`) sobe o minor. Para forçar: `pnpm release --minor` ou `pnpm release -r 0.3.0`.
+
+A seção da versão no `CHANGELOG.md` vira as notas da release no GitHub.
 
 O workflow `.github/workflows/release.yml` builda macOS, Windows e Linux e publica a release no GitHub quando os três terminam. Windows e Linux se atualizam sozinhos; no macOS, sem assinatura, o app só avisa e abre a página de download (ADR 0006). Uma tag com `-` (ex.: `v0.2.0-beta.1`) sai como pré-release.
 

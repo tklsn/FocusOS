@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "Gerenciador de tarefas offline-first",
+  "repository": "github:tklsn/FocusOS",
   "type": "module",
   "main": "electron/main.mjs",
   "scripts": {
@@ -19,7 +20,9 @@
     "db:studio": "drizzle-kit studio",
     "dev:desktop": "electron . --dev",
     "start:desktop": "nuxt build && electron .",
-    "build:desktop": "nuxt build && electron-builder"
+    "build:desktop": "nuxt build && electron-builder",
+    "release": "changelogen --release --push",
+    "release:beta": "changelogen --release --prerelease beta --push"
   },
   "dependencies": {
     "electron-updater": "^6.8.11"
@@ -31,6 +34,7 @@
     "@types/node": "^26.6.3",
     "@vee-validate/zod": "^4.15.1",
     "@vueuse/core": "^15.0.0",
+    "changelogen": "0.6.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^18.0.4",
@@ -127,6 +131,33 @@
       ],
       "category": "Office",
       "artifactName": "${productName}-${version}-${arch}.${ext}"
+    }
+  },
+  "changelog": {
+    "hideAuthorEmail": true,
+    "types": {
+      "feat": {
+        "title": "🚀 Novidades"
+      },
+      "fix": {
+        "title": "🩹 Correções"
+      },
+      "perf": {
+        "title": "🔥 Desempenho"
+      },
+      "refactor": {
+        "title": "💅 Refatorações"
+      },
+      "build": {
+        "title": "📦 Build"
+      },
+      "docs": false,
+      "chore": false,
+      "test": false,
+      "ci": false,
+      "style": false,
+      "examples": false,
+      "types": false
     }
   }
 }
